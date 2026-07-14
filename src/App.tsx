@@ -17,7 +17,6 @@ function App() {
   const [isTerminalOpen, setIsTerminalOpen] = useState(false);
   
   const [homeSearchQuery, setHomeSearchQuery] = useState('');
-  const [homeSelectedTopic, setHomeSelectedTopic] = useState('All');
   
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -107,42 +106,26 @@ function App() {
     };
   }, []);
 
-  // Filter systems based on global search + topic selection
+  // Filter systems based on global search
   const filteredArticles = articles.filter(art => {
-    const matchesTopic = homeSelectedTopic === 'All' || art.category === homeSelectedTopic || art.tags.includes(homeSelectedTopic);
     const matchesSearch = art.title.toLowerCase().includes(homeSearchQuery.toLowerCase()) ||
                           art.excerpt.toLowerCase().includes(homeSearchQuery.toLowerCase()) ||
                           art.tags.some(tag => tag.toLowerCase().includes(homeSearchQuery.toLowerCase()));
-    return matchesTopic && matchesSearch;
+    return matchesSearch;
   });
 
   const filteredProjects = projects.filter(proj => {
-    const matchesTopic = homeSelectedTopic === 'All' || proj.category === homeSelectedTopic || proj.tech.includes(homeSelectedTopic);
     const matchesSearch = proj.title.toLowerCase().includes(homeSearchQuery.toLowerCase()) ||
                           proj.description.toLowerCase().includes(homeSearchQuery.toLowerCase()) ||
                           proj.tech.some(t => t.toLowerCase().includes(homeSearchQuery.toLowerCase()));
-    return matchesTopic && matchesSearch;
+    return matchesSearch;
   });
 
   const filteredAchievements = achievements.filter(ach => {
-    let matchesTopic = true;
-    if (homeSelectedTopic !== 'All') {
-      const topicLower = homeSelectedTopic.toLowerCase();
-      const descLower = ach.description.toLowerCase() + " " + ach.title.toLowerCase() + " " + ach.type.toLowerCase();
-      if (topicLower === 'graphics') {
-        matchesTopic = descLower.includes('graphics') || descLower.includes('shader') || descLower.includes('fluid') || descLower.includes('canvas');
-      } else if (topicLower === 'webassembly') {
-        matchesTopic = descLower.includes('webassembly') || descLower.includes('wasm') || descLower.includes('rust');
-      } else if (topicLower === 'systems') {
-        matchesTopic = descLower.includes('systems') || descLower.includes('architecture') || descLower.includes('kernel') || descLower.includes('micro-frontend') || descLower.includes('cloud') || descLower.includes('distributed');
-      } else {
-        matchesTopic = descLower.includes(topicLower);
-      }
-    }
     const matchesSearch = ach.title.toLowerCase().includes(homeSearchQuery.toLowerCase()) ||
                           ach.description.toLowerCase().includes(homeSearchQuery.toLowerCase()) ||
                           ach.subtitle.toLowerCase().includes(homeSearchQuery.toLowerCase());
-    return matchesTopic && matchesSearch;
+    return matchesSearch;
   });
 
   // Handle navigations from Terminal console commands
@@ -396,7 +379,7 @@ function App() {
     }
   };
 
-  const showFilterBlock = !activeDetail && activeTab !== 'contact';
+  const showFilterBlock = !activeDetail;
 
   return (
     <div className="app-container">
@@ -407,86 +390,57 @@ function App() {
 
       {/* Core main wrapper section */}
       <main className="main-content" id="main-content-area">
-        {/* Top Brand Header (Big title header) */}
+        {/* Top Brand Header (Visual matching uploaded reference) */}
         <header className="home-brand-block flex-center">
-          <h1 className="home-title-logo">SD DEVLOG</h1>
+          <button onClick={() => setIsTerminalOpen(true)} className="portfolio-action-btn">
+            Launch Console (CLI)
+          </button>
+          
+          <div className="brand-logo-container">
+            <span className="brand-sd-stacked">SD</span>
+            <span className="brand-devlog-text">
+              DEV<span className="sparkle-o">O<span className="sparkle-star">✦</span></span>G
+            </span>
+          </div>
+          
           <p className="home-slogan-text">Compiling low-level logic, rendering high-fidelity designs.</p>
         </header>
 
-        {/* Options Navigation Buttons */}
-        {!activeDetail && (
-          <div className="home-options-bar flex-center">
-            <button 
-              onClick={() => { setActiveTab('all'); setActiveDetail(null); }} 
-              className={`home-option-btn ${activeTab === 'all' && !activeDetail ? 'active' : ''}`}
-            >
-              All
-            </button>
-            <button 
-              onClick={() => { setActiveTab('articles'); setActiveDetail(null); }} 
-              className={`home-option-btn ${activeTab === 'articles' && !activeDetail ? 'active' : ''}`}
-            >
-              Research
-            </button>
-            <button 
-              onClick={() => { setActiveTab('projects'); setActiveDetail(null); }} 
-              className={`home-option-btn ${activeTab === 'projects' && !activeDetail ? 'active' : ''}`}
-            >
-              Projects
-            </button>
-            <button 
-              onClick={() => { setActiveTab('milestones'); setActiveDetail(null); }} 
-              className={`home-option-btn ${activeTab === 'milestones' && !activeDetail ? 'active' : ''}`}
-            >
-              Achievements
-            </button>
-            <button 
-              onClick={() => { setActiveTab('contact'); setActiveDetail(null); }} 
-              className={`home-option-btn ${activeTab === 'contact' && !activeDetail ? 'active' : ''}`}
-            >
-              Contact
-            </button>
-            <button 
-              onClick={() => setIsTerminalOpen(true)} 
-              className="home-option-btn console-btn-opt"
-            >
-              Developer Console (CLI)
-            </button>
-          </div>
-        )}
-
-        {/* Unified Static Search & Topic Filter Block */}
+        {/* Unified Search & Tab Options Bar */}
         {showFilterBlock && (
-          <div className="home-filter-block glass-card">
-            <div className="home-topics-section">
-              <span className="topics-heading">Domains:</span>
-              <div className="topics-list-wrap">
-                {['All', 'Graphics', 'WebAssembly', 'Systems', 'AI'].map((topic) => (
-                  <button
-                    key={topic}
-                    className={`topic-filter-btn ${homeSelectedTopic === topic ? 'active' : ''}`}
-                    onClick={() => setHomeSelectedTopic(topic)}
-                  >
-                    {topic}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="home-search-bar">
+          <div className="home-filter-bar-row">
+            <div className="search-bar-wrap">
               <Search size={18} className="search-bar-icon" />
               <input
                 type="text"
                 placeholder={`Search ${activeTab === 'all' ? 'logs' : activeTab === 'articles' ? 'research' : activeTab === 'projects' ? 'projects' : 'achievements'}...`}
                 value={homeSearchQuery}
                 onChange={(e) => setHomeSearchQuery(e.target.value)}
-                className="home-search-input"
+                className="search-input-field"
               />
               {homeSearchQuery && (
                 <button onClick={() => setHomeSearchQuery('')} className="search-clear-btn">
                   Clear
                 </button>
               )}
+            </div>
+
+            <div className="filter-options-wrap">
+              {[
+                { id: 'all', label: 'ALL' },
+                { id: 'articles', label: 'RESEARCH' },
+                { id: 'projects', label: 'PROJECTS' },
+                { id: 'milestones', label: 'ACHIEVEMENTS' },
+                { id: 'contact', label: 'CONTACT' }
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => { setActiveTab(tab.id as any); setActiveDetail(null); }}
+                  className={`filter-option-pill ${activeTab === tab.id ? 'active' : ''}`}
+                >
+                  {tab.label}
+                </button>
+              ))}
             </div>
           </div>
         )}
