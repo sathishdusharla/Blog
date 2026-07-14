@@ -198,15 +198,12 @@ function App() {
 
   // Dynamically map projects to article cards
   const getArticleProjectLink = (id: string) => {
-    if (id === 'optimizing-canvas-content-visibility') return 'ParaDetect AI';
-    if (id === 'wasm-multithreading-sharedarraybuffer') return 'BlockvoteX';
+    if (id === 'navsight-assistive-navigation') return 'NavSight';
     return null;
   };
 
   const getArticleDomainLink = (id: string) => {
-    if (id === 'optimizing-canvas-content-visibility') return 'AI / TensorFlow.js';
-    if (id === 'wasm-multithreading-sharedarraybuffer') return 'Systems / Solidity';
-    if (id === 'css-cascade-layers-guide') return 'CSS Architecture';
+    if (id === 'navsight-assistive-navigation') return 'AI / Computer Vision';
     return 'Systems Development';
   };
 

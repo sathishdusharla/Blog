@@ -38,14 +38,6 @@ export const achievements: Achievement[] = [
     subtitle: 'Blockchain Club, Anurag University',
     description: 'Conducted advanced technical workshops and smart contract seminars for over 200+ students.',
     type: 'milestone'
-  },
-  {
-    id: 'hackathon-competitor',
-    year: '2023-2025',
-    title: 'National Hackathon Competitor',
-    subtitle: '15+ Events',
-    description: 'Participated in 15+ national-level hackathons, engineering solutions spanning blockchain, IoT, and deep learning.',
-    type: 'certification'
   }
 ];
 
