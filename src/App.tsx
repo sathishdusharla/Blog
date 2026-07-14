@@ -387,44 +387,46 @@ function App() {
         </header>
 
         {/* Options Navigation Buttons */}
-        <div className="home-options-bar flex-center">
-          <button 
-            onClick={() => { setActiveTab('all'); setActiveDetail(null); }} 
-            className={`home-option-btn ${activeTab === 'all' && !activeDetail ? 'active' : ''}`}
-          >
-            All
-          </button>
-          <button 
-            onClick={() => { setActiveTab('articles'); setActiveDetail(null); }} 
-            className={`home-option-btn ${activeTab === 'articles' && !activeDetail ? 'active' : ''}`}
-          >
-            Research
-          </button>
-          <button 
-            onClick={() => { setActiveTab('projects'); setActiveDetail(null); }} 
-            className={`home-option-btn ${activeTab === 'projects' && !activeDetail ? 'active' : ''}`}
-          >
-            Projects
-          </button>
-          <button 
-            onClick={() => { setActiveTab('milestones'); setActiveDetail(null); }} 
-            className={`home-option-btn ${activeTab === 'milestones' && !activeDetail ? 'active' : ''}`}
-          >
-            Achievements
-          </button>
-          <button 
-            onClick={() => { setActiveTab('contact'); setActiveDetail(null); }} 
-            className={`home-option-btn ${activeTab === 'contact' && !activeDetail ? 'active' : ''}`}
-          >
-            Contact
-          </button>
-          <button 
-            onClick={() => setIsTerminalOpen(true)} 
-            className="home-option-btn console-btn-opt"
-          >
-            Developer Console (CLI)
-          </button>
-        </div>
+        {!activeDetail && (
+          <div className="home-options-bar flex-center">
+            <button 
+              onClick={() => { setActiveTab('all'); setActiveDetail(null); }} 
+              className={`home-option-btn ${activeTab === 'all' && !activeDetail ? 'active' : ''}`}
+            >
+              All
+            </button>
+            <button 
+              onClick={() => { setActiveTab('articles'); setActiveDetail(null); }} 
+              className={`home-option-btn ${activeTab === 'articles' && !activeDetail ? 'active' : ''}`}
+            >
+              Research
+            </button>
+            <button 
+              onClick={() => { setActiveTab('projects'); setActiveDetail(null); }} 
+              className={`home-option-btn ${activeTab === 'projects' && !activeDetail ? 'active' : ''}`}
+            >
+              Projects
+            </button>
+            <button 
+              onClick={() => { setActiveTab('milestones'); setActiveDetail(null); }} 
+              className={`home-option-btn ${activeTab === 'milestones' && !activeDetail ? 'active' : ''}`}
+            >
+              Achievements
+            </button>
+            <button 
+              onClick={() => { setActiveTab('contact'); setActiveDetail(null); }} 
+              className={`home-option-btn ${activeTab === 'contact' && !activeDetail ? 'active' : ''}`}
+            >
+              Contact
+            </button>
+            <button 
+              onClick={() => setIsTerminalOpen(true)} 
+              className="home-option-btn console-btn-opt"
+            >
+              Developer Console (CLI)
+            </button>
+          </div>
+        )}
 
         {/* Unified Static Search & Topic Filter Block */}
         {showFilterBlock && (
