@@ -17,6 +17,7 @@ function App() {
   const [isTerminalOpen, setIsTerminalOpen] = useState(false);
   
   const [homeSearchQuery, setHomeSearchQuery] = useState('');
+  const [homeSelectedTopic, setHomeSelectedTopic] = useState('All');
   
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -112,26 +113,42 @@ function App() {
     };
   }, []);
 
-  // Filter systems based on global search
+  // Filter systems based on global search + topic selection
   const filteredArticles = articles.filter(art => {
+    const matchesTopic = homeSelectedTopic === 'All' || art.category === homeSelectedTopic || art.tags.includes(homeSelectedTopic);
     const matchesSearch = art.title.toLowerCase().includes(homeSearchQuery.toLowerCase()) ||
                           art.excerpt.toLowerCase().includes(homeSearchQuery.toLowerCase()) ||
                           art.tags.some(tag => tag.toLowerCase().includes(homeSearchQuery.toLowerCase()));
-    return matchesSearch;
+    return matchesTopic && matchesSearch;
   });
 
   const filteredProjects = projects.filter(proj => {
+    const matchesTopic = homeSelectedTopic === 'All' || proj.category === homeSelectedTopic || proj.tech.includes(homeSelectedTopic);
     const matchesSearch = proj.title.toLowerCase().includes(homeSearchQuery.toLowerCase()) ||
                           proj.description.toLowerCase().includes(homeSearchQuery.toLowerCase()) ||
                           proj.tech.some(t => t.toLowerCase().includes(homeSearchQuery.toLowerCase()));
-    return matchesSearch;
+    return matchesTopic && matchesSearch;
   });
 
   const filteredAchievements = achievements.filter(ach => {
+    let matchesTopic = true;
+    if (homeSelectedTopic !== 'All') {
+      const topicLower = homeSelectedTopic.toLowerCase();
+      const descLower = ach.description.toLowerCase() + " " + ach.title.toLowerCase() + " " + ach.type.toLowerCase();
+      if (topicLower === 'graphics') {
+        matchesTopic = descLower.includes('graphics') || descLower.includes('shader') || descLower.includes('fluid') || descLower.includes('canvas');
+      } else if (topicLower === 'webassembly') {
+        matchesTopic = descLower.includes('webassembly') || descLower.includes('wasm') || descLower.includes('rust');
+      } else if (topicLower === 'systems') {
+        matchesTopic = descLower.includes('systems') || descLower.includes('architecture') || descLower.includes('kernel') || descLower.includes('micro-frontend') || descLower.includes('cloud') || descLower.includes('distributed');
+      } else {
+        matchesTopic = descLower.includes(topicLower);
+      }
+    }
     const matchesSearch = ach.title.toLowerCase().includes(homeSearchQuery.toLowerCase()) ||
                           ach.description.toLowerCase().includes(homeSearchQuery.toLowerCase()) ||
                           ach.subtitle.toLowerCase().includes(homeSearchQuery.toLowerCase());
-    return matchesSearch;
+    return matchesTopic && matchesSearch;
   });
 
   // Handle navigations from Terminal console commands
@@ -385,7 +402,7 @@ function App() {
     }
   };
 
-  const showFilterBlock = !activeDetail;
+  const showFilterBlock = !activeDetail && activeTab !== 'contact';
 
   return (
     <div className="app-container">
@@ -396,61 +413,86 @@ function App() {
 
       {/* Core main wrapper section */}
       <main className="main-content" id="main-content-area">
-        {/* Top Brand Header (Visual matching uploaded reference) */}
+        {/* Top Brand Header (Our original clean transparent logo) */}
         <header className="home-brand-block flex-center">
-          <button onClick={() => setIsTerminalOpen(true)} className="portfolio-action-btn">
-            Launch Console (CLI)
-          </button>
-          
-          <div className="brand-logo-container">
-            <div className="brand-logo-top-line">SD</div>
-            <div className="brand-logo-bottom-line">
-              DEV<span className="sparkle-o">O
-                <svg className="sparkle-svg-star" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 0L14.6 9.4L24 12L14.6 14.6L12 24L9.4 14.6L0 12L9.4 9.4L12 0Z" />
-                </svg>
-              </span>G
-            </div>
-          </div>
-          
+          <h1 className="home-title-logo">SD DEVLOG</h1>
           <p className="home-slogan-text">Compiling low-level logic, rendering high-fidelity designs.</p>
         </header>
 
-        {/* Unified Search & Tab Options Bar */}
+        {/* Options Navigation Buttons */}
+        {!activeDetail && (
+          <div className="home-options-bar flex-center">
+            <button 
+              onClick={() => { setActiveTab('all'); setActiveDetail(null); }} 
+              className={`home-option-btn ${activeTab === 'all' && !activeDetail ? 'active' : ''}`}
+            >
+              All
+            </button>
+            <button 
+              onClick={() => { setActiveTab('articles'); setActiveDetail(null); }} 
+              className={`home-option-btn ${activeTab === 'articles' && !activeDetail ? 'active' : ''}`}
+            >
+              Research
+            </button>
+            <button 
+              onClick={() => { setActiveTab('projects'); setActiveDetail(null); }} 
+              className={`home-option-btn ${activeTab === 'projects' && !activeDetail ? 'active' : ''}`}
+            >
+              Projects
+            </button>
+            <button 
+              onClick={() => { setActiveTab('milestones'); setActiveDetail(null); }} 
+              className={`home-option-btn ${activeTab === 'milestones' && !activeDetail ? 'active' : ''}`}
+            >
+              Achievements
+            </button>
+            <button 
+              onClick={() => { setActiveTab('contact'); setActiveDetail(null); }} 
+              className={`home-option-btn ${activeTab === 'contact' && !activeDetail ? 'active' : ''}`}
+            >
+              Contact
+            </button>
+            <button 
+              onClick={() => setIsTerminalOpen(true)} 
+              className="home-option-btn console-btn-opt"
+            >
+              Developer Console (CLI)
+            </button>
+          </div>
+        )}
+
+        {/* Unified Static Search & Topic Filter Block */}
         {showFilterBlock && (
-          <div className="home-filter-bar-row">
-            <div className="search-bar-wrap">
+          <div className="home-filter-block glass-card">
+            <div className="home-topics-section">
+              <span className="topics-heading">Domains:</span>
+              <div className="topics-list-wrap">
+                {['All', 'Graphics', 'WebAssembly', 'Systems', 'AI'].map((topic) => (
+                  <button
+                    key={topic}
+                    className={`topic-filter-btn ${homeSelectedTopic === topic ? 'active' : ''}`}
+                    onClick={() => setHomeSelectedTopic(topic)}
+                  >
+                    {topic}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="home-search-bar">
               <Search size={18} className="search-bar-icon" />
               <input
                 type="text"
                 placeholder={`Search ${activeTab === 'all' ? 'logs' : activeTab === 'articles' ? 'research' : activeTab === 'projects' ? 'projects' : 'achievements'}...`}
                 value={homeSearchQuery}
                 onChange={(e) => setHomeSearchQuery(e.target.value)}
-                className="search-input-field"
+                className="home-search-input"
               />
               {homeSearchQuery && (
                 <button onClick={() => setHomeSearchQuery('')} className="search-clear-btn">
                   Clear
                 </button>
               )}
-            </div>
-
-            <div className="filter-options-wrap">
-              {[
-                { id: 'all', label: 'ALL' },
-                { id: 'articles', label: 'RESEARCH' },
-                { id: 'projects', label: 'PROJECTS' },
-                { id: 'milestones', label: 'ACHIEVEMENTS' },
-                { id: 'contact', label: 'CONTACT' }
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => { setActiveTab(tab.id as any); setActiveDetail(null); }}
-                  className={`filter-option-pill ${activeTab === tab.id ? 'active' : ''}`}
-                >
-                  {tab.label}
-                </button>
-              ))}
             </div>
           </div>
         )}
