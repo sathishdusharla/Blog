@@ -188,9 +188,9 @@ export const Terminal: React.FC<TerminalProps> = ({ onClose, onNavigate }) => {
           <div className="cmd-output-about">
             <p className="neon-text-purple">FILE: developer_profile.json</p>
             <p><strong>Name:</strong> Sathish Dusharla</p>
-            <p><strong>Role:</strong> Senior Software Engineer & Creative Graphic Designer</p>
-            <p><strong>Philosophy:</strong> "Building highly optimized system architectures and wrapping them in visually breathtaking interfaces. Beauty is in the shaders, strength is in the compiler."</p>
-            <p>Sathish specializes in high-performance web graphics (WebGL, WebGPU, Rust compiling to WebAssembly), system programming (Rust OS kernels), and advanced React client applications. He has 4+ years of creating custom components and interactive interfaces that bridge creative arts and engineering.</p>
+            <p><strong>Role:</strong> AI Systems Engineer & Full-Stack Developer</p>
+            <p><strong>Philosophy:</strong> "Bridging complex artificial intelligence, blockchain consensus, and hardware IoT layers to build highly integrated, secure software platforms."</p>
+            <p>Sathish specializes in custom deep learning architectures (CNNs, YOLOv3), browser-based GPU inference (TensorFlow.js), decentralized systems (Solidity smart contracts, Ethereum networks), and physical IoT computing interfaces (Arduino sensor arrays).</p>
           </div>
         );
         break;
@@ -206,7 +206,7 @@ export const Terminal: React.FC<TerminalProps> = ({ onClose, onNavigate }) => {
                 </p>
                 <p className="project-desc">{proj.description}</p>
                 <p className="project-meta">
-                  Tech: {proj.tech.join(', ')} | Stars: ★{proj.stats.stars || 0}
+                  Tech: {proj.tech.join(', ')} {proj.stats.accuracy ? `| Accuracy: ${proj.stats.accuracy}` : ''} {proj.stats.cost ? `| Cost: ${proj.stats.cost}` : ''}
                 </p>
               </div>
             ))}
@@ -239,15 +239,15 @@ export const Terminal: React.FC<TerminalProps> = ({ onClose, onNavigate }) => {
               <tbody>
                 <tr>
                   <td className="neon-text-green">Languages</td>
-                  <td>TypeScript/JavaScript, Rust, GLSL/WGSL (Shaders), HTML/CSS, C++, Python, Shell</td>
+                  <td>TypeScript/JavaScript, Python, Solidity (Ethereum), C/C++, HTML/CSS, SQL</td>
                 </tr>
                 <tr>
-                  <td className="neon-text-green">Frameworks</td>
-                  <td>React (Next.js, Vite), Node.js, WebGL/Three.js, Web Audio API, TensorFlow.js</td>
+                  <td className="neon-text-green">Frameworks/AI</td>
+                  <td>React (Next.js, Vite), TensorFlow.js, Scikit-learn, OpenCV, Node.js, Express.js</td>
                 </tr>
                 <tr>
-                  <td className="neon-text-green">Systems / DevOps</td>
-                  <td>Linux Kernel programming, Docker, AWS, Git, Web Workers, CI/CD, Makefile</td>
+                  <td className="neon-text-green">Systems/IoT</td>
+                  <td>Ethereum Blockchain (Ganache, MetaMask), Arduino microcontrollers, Supabase, MySQL/MongoDB</td>
                 </tr>
               </tbody>
             </table>

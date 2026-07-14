@@ -16,42 +16,42 @@ export interface Stat {
 
 export const achievements: Achievement[] = [
   {
-    id: 'lead-dev',
+    id: 'innoquest-convenor',
     year: '2025',
-    title: 'Lead Software Architect',
-    subtitle: 'NexaTech Solutions',
-    description: 'Designed a micro-frontend framework serving over 5 million daily active users, utilizing Rust, WebAssembly, and React to reduce load times by 40%.',
+    title: 'Student Convenor',
+    subtitle: 'INNOQUEST #4 National Innovation Hackathon',
+    description: 'Organized a national innovation hackathon with 170 teams and 579 participants in collaboration with Microsoft, Azure Developer Community, Reskilll, and IEEE Women in Engineering.',
     type: 'milestone'
   },
   {
-    id: 'hack-win',
+    id: 'innoquest-winner',
     year: '2024',
-    title: '1st Place Winner - CyberGraphics Hackathon',
-    subtitle: 'Global Tech Initiative',
-    description: 'Built a real-time fluid simulation engine using WebGL and custom shaders in 48 hours, winning the best technical solution award.',
+    title: 'Winner - Microsoft + Reskill InnoQuest Hackathon',
+    subtitle: 'Anurag University & Reskilll',
+    description: 'Won the first place award at the Microsoft + Reskill InnoQuest Hackathon for developing NavSight, an innovative AI-powered indoor navigation solution for visually impaired individuals.',
     type: 'award'
   },
   {
-    id: 'grad',
-    year: '2022',
-    title: 'M.S. in Computer Science',
-    subtitle: 'Stanford University',
-    description: 'Specialized in Computer Graphics and Distributed Systems. Graduated with Honors. Thesis: Parallel Computing on Web Browsers.',
+    id: 'blockchain-vp',
+    year: '2024',
+    title: 'Vice President',
+    subtitle: 'Blockchain Club, Anurag University',
+    description: 'Conducted advanced technical workshops and smart contract seminars for over 200+ students.',
     type: 'milestone'
   },
   {
-    id: 'aws-cert',
-    year: '2023',
-    title: 'AWS Certified Solutions Architect',
-    subtitle: 'Amazon Web Services',
-    description: 'Professional validation of cloud architecture designing skills, focusing on high availability, security, and performance optimization.',
+    id: 'hackathon-competitor',
+    year: '2023-2025',
+    title: 'National Hackathon Competitor',
+    subtitle: '15+ Events',
+    description: 'Participated in 15+ national-level hackathons, engineering solutions spanning blockchain, IoT, and deep learning.',
     type: 'certification'
   }
 ];
 
 export const stats: Stat[] = [
-  { id: 'projects', label: 'Projects Completed', value: 32 },
-  { id: 'commits', label: 'Github Commits (YTD)', value: 1420 },
-  { id: 'coffee', label: 'Liters of Coffee', value: 450 },
-  { id: 'fps', label: 'Max Render Framerate', value: 120, suffix: ' FPS' }
+  { id: 'hackathons', label: 'Hackathons Attended', value: 15 },
+  { id: 'participants', label: 'Participants Convened', value: 579 },
+  { id: 'students', label: 'Students Mentored', value: 200 },
+  { id: 'images', label: 'NIH images trained', value: 27560 }
 ];

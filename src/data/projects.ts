@@ -10,70 +10,63 @@ export interface Project {
   demo?: string;
   stats: {
     stars?: number;
-    fps?: number;
     accuracy?: string;
-    lines?: number;
+    cost?: string;
+    achievement?: string;
   };
 }
 
 export const projects: Project[] = [
   {
-    id: 'wasm-ray',
-    title: 'WasmRay',
-    category: 'WebAssembly',
-    description: 'A multi-threaded, real-time path tracer compiled to WebAssembly, running directly in the browser via Web Workers.',
-    longDescription: 'WasmRay is a high-performance path tracing engine written in Rust and compiled to WebAssembly. By leveraging Web Workers, it runs parallel ray-tracing workloads across all available CPU cores directly in the browser. It features bounding volume hierarchies (BVH) for accelerated triangle intersection, interactive camera movement, custom material properties (metallic, dielectric, diffuse), and progressive rendering with denoisers.',
-    tech: ['Rust', 'WebAssembly', 'SharedArrayBuffer', 'Web Workers', 'HTML5 Canvas'],
-    glowType: 'cyan',
-    github: 'https://github.com/example/wasm-ray',
-    demo: '#',
-    stats: {
-      stars: 342,
-      fps: 45
-    }
-  },
-  {
-    id: 'shader-flow',
-    title: 'ShaderFlow',
-    category: 'Graphics',
-    description: 'A visual, node-based editor for creating custom GLSL fragment shaders, compiling instantly with live canvas previews.',
-    longDescription: 'ShaderFlow is a node-based editor built for graphic designers and frontend developers. It allows users to visually compose GLSL fragment shaders by connecting mathematically structured nodes (noise, math, transforms, time-functions). It translates the nodes to WebGL-compliant GLSL code in real-time, compiling and rendering it to a background canvas overlay with 60 FPS performance. Highly optimized with zero unnecessary state redraws.',
-    tech: ['TypeScript', 'WebGL', 'GLSL', 'React', 'CSS Variables', 'Canvas API'],
-    glowType: 'purple',
-    github: 'https://github.com/example/shader-flow',
-    demo: '#',
-    stats: {
-      stars: 489,
-      fps: 60
-    }
-  },
-  {
-    id: 'chrono-kernel',
-    title: 'ChronoKernel',
-    category: 'Systems',
-    description: 'A custom, preemptive multitasking OS kernel written in Rust targeting x86_64, featuring virtual memory management.',
-    longDescription: 'ChronoKernel is an educational bare-metal operating system kernel built from scratch in Rust. It implements x86_64 CPU initialization, paging, virtual memory management, a thread scheduler supporting preemptive multitasking, interrupts management (IDT, PIC), and a basic custom filesystem. It integrates with QEMU for virtualization and utilizes linker scripts for precise memory map control.',
-    tech: ['Rust', 'Assembly', 'QEMU', 'Linker Scripts', 'Docker', 'Makefile'],
-    glowType: 'orange',
-    github: 'https://github.com/example/chrono-kernel',
-    stats: {
-      stars: 612,
-      lines: 12500
-    }
-  },
-  {
-    id: 'neuro-synth',
-    title: 'NeuroSynth',
+    id: 'paradetect-ai',
+    title: 'ParaDetect AI',
     category: 'AI',
-    description: 'Real-time neural audio synthesizer that generates complex ambient soundscapes using client-side deep neural networks.',
-    longDescription: 'NeuroSynth explores the intersection of neural networks and generative audio design. Running entirely client-side using TensorFlow.js, it translates mouse movement and ambient parameters into high-dimensional latent space vectors. These vectors are mapped in real-time using a decoder network to synthesize custom multi-voice synthesizer controls running directly on the Web Audio API.',
-    tech: ['JavaScript', 'TensorFlow.js', 'Web Audio API', 'WebGPU', 'Vector Math'],
+    description: 'A hybrid Deep Learning and Multimodal AI clinical platform automating malaria diagnosis from blood smear microscopy images.',
+    longDescription: 'ParaDetect AI is a full-stack clinical decision support platform that automates malaria diagnosis from blood smear microscopy images. It features a hybrid architecture combining a custom CNN trained on 27,560+ NIH malaria cell images (achieving over 95% validation accuracy with browser-based WebGL-accelerated inference in 400-600ms via TensorFlow.js) with Google Gemini 2.5 Flash for parasite detection, species identification, lifecycle stage recognition, parasitemia estimation, severity assessment, and explainable clinical interpretation. It generates WHO-aligned diagnostic reports, lab risk predictions, and downloadable PDFs, backed by a scalable Supabase patient records database.',
+    tech: ['React', 'TypeScript', 'TensorFlow.js', 'Google Gemini 2.5 Flash', 'Supabase', 'WebGL'],
     glowType: 'cyan',
-    github: 'https://github.com/example/neuro-synth',
-    demo: '#',
+    github: 'https://github.com/paradetectai',
+    demo: 'https://paradetectai.netlify.app',
     stats: {
-      stars: 215,
-      accuracy: '94.2%'
+      accuracy: '95%+'
+    }
+  },
+  {
+    id: 'blockvotex',
+    title: 'BlockvoteX',
+    category: 'Systems',
+    description: 'A decentralized e-voting platform leveraging Ethereum blockchain and Solidity smart contracts for secure digital elections.',
+    longDescription: 'BlockvoteX is a decentralized full-stack e-voting platform built on Ethereum. It utilizes Solidity smart contracts to secure election setup, voter verification, one person-one vote enforcement, automated tallying, and immutable on-chain record keeping. Integrated with React, Node.js, Express, MongoDB, and Web3.js, it supports remote voting with MetaMask wallet authentication, role-based admin controls, and real-time result dashboards providing transparent, tamper-proof auditable elections.',
+    tech: ['React', 'Node.js', 'Solidity', 'Ethereum', 'Web3.js', 'MongoDB', 'Ganache'],
+    glowType: 'purple',
+    github: 'https://github.com/blockvotex',
+    demo: 'https://blockvotex.netlify.app',
+    stats: {
+      stars: 124
+    }
+  },
+  {
+    id: 'ejihva',
+    title: 'eJihva',
+    category: 'AI',
+    description: 'An AI-powered Electronic Tongue automating Ayurvedic Dravya identification using chemical sensor arrays and Machine Learning.',
+    longDescription: 'eJihva is an IoT and Machine Learning solution that automates Ayurvedic Dravya identification. It links pH, electrical conductivity (EC), and TDS sensors with an Arduino UNO to generate unique chemical signatures. Using Scikit-learn, the system pre-processes features and performs confidence-based classification. A custom Python desktop app provides real-time sensor streams and automated dataset builders, creating a portable, low-cost alternative to complex laboratory testing.',
+    tech: ['Python', 'Arduino UNO', 'Scikit-learn', 'IoT', 'Machine Learning'],
+    glowType: 'orange',
+    stats: {
+      cost: '˜6K INR'
+    }
+  },
+  {
+    id: 'navsight',
+    title: 'NavSight',
+    category: 'AI',
+    description: 'An AI-powered indoor navigation system for visually impaired individuals utilizing computer vision and voice commands.',
+    longDescription: 'NavSight is an AI-powered indoor navigation system for visually impaired individuals. It integrates YOLOv3, OpenCV, and QR code detection to identify obstacles, location markings, and paths, delivering voice-guided directions to users. The platform supports an offline-first workflow, emergency alerts, and voice authentication. NavSight won the Microsoft + Reskill InnoQuest Hackathon for its innovative assistance design.',
+    tech: ['Python', 'Flask', 'Django', 'YOLOv3', 'OpenCV', 'MySQL'],
+    glowType: 'cyan',
+    stats: {
+      achievement: 'Hackathon Winner'
     }
   }
 ];
