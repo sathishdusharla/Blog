@@ -1,9 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
-import { Terminal as TermIcon, ArrowRight, Mail, Sparkles } from 'lucide-react';
+import { ArrowRight, Mail, Search } from 'lucide-react';
 import { Github, Linkedin } from './components/BrandIcons';
 import Header from './components/Header';
 import Terminal from './components/Terminal';
-import TechStack from './components/TechStack';
 import ProjectCard from './components/ProjectCard';
 import ProjectModal from './components/ProjectModal';
 import Timeline from './components/Timeline';
@@ -19,6 +18,8 @@ function App() {
   const [isTerminalOpen, setIsTerminalOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [projectFilter, setProjectFilter] = useState<string>('All');
+  const [homeSearchQuery, setHomeSearchQuery] = useState('');
+  const [homeSelectedTopic, setHomeSelectedTopic] = useState('All');
   
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -127,90 +128,113 @@ function App() {
     }
 
     switch (activeSection) {
-      case 'home':
+      case 'home': {
+        const filteredArticles = articles.filter(art => {
+          const matchesTopic = homeSelectedTopic === 'All' || art.category === homeSelectedTopic || art.tags.includes(homeSelectedTopic);
+          const matchesSearch = art.title.toLowerCase().includes(homeSearchQuery.toLowerCase()) ||
+                                art.excerpt.toLowerCase().includes(homeSearchQuery.toLowerCase()) ||
+                                art.tags.some(tag => tag.toLowerCase().includes(homeSearchQuery.toLowerCase()));
+          return matchesTopic && matchesSearch;
+        });
+
         return (
           <div className="section-home-wrap">
-            {/* Hero Splash Header */}
-            <section className="hero-splash-container">
-              <div className="hero-text-side">
-                <span className="hero-greeting-badge">
-                  <Sparkles size={14} className="star-icon-glow" />
-                  Engineering Visual Architectures
-                </span>
-                <h1 className="hero-headline">
-                  SD <span className="text-gradient-cyan-purple">DEVLOG</span>
-                </h1>
-                <p className="hero-subheadline" style={{ fontFamily: 'var(--font-mono)', fontSize: '1.05rem', fontWeight: 600, color: 'var(--color-primary)', borderLeft: '2px solid var(--color-primary)', paddingLeft: '12px', margin: '4px 0 12px' }}>
-                  Thoughts that trigger builds, builds that teach lessons.
-                </p>
-                <p className="hero-lead">
-                  Curated by Sathish Dusharla. I write highly optimized system code compiled to WebAssembly/Rust and wrap it in visually stunning, responsive client-side graphical designs.
-                </p>
-                <div className="hero-button-row">
-                  <button className="hero-cta-btn gui text-gradient-cyan-purple" onClick={() => setActiveSection('projects')}>
-                    <span>Inspect Projects</span>
-                    <ArrowRight size={16} />
-                  </button>
-                  <button className="hero-cta-btn cli flex-center" onClick={() => setIsTerminalOpen(true)}>
-                    <TermIcon size={16} />
-                    <span>Launch console</span>
-                  </button>
+            {/* Top Brand Header (Typographic visual matching uploaded design) */}
+            <header className="home-brand-block flex-center">
+              <h1 className="home-title-logo">SD DEVLOG</h1>
+              <p className="home-slogan-text">Thoughts that trigger builds, builds that teach lessons.</p>
+            </header>
+
+            {/* Options Navigation Buttons */}
+            <div className="home-options-bar flex-center">
+              <button onClick={() => setActiveSection('projects')} className="home-option-btn">
+                Projects
+              </button>
+              <button onClick={() => setActiveSection('milestones')} className="home-option-btn">
+                Achievements
+              </button>
+              <button onClick={() => setActiveSection('articles')} className="home-option-btn">
+                Tech News
+              </button>
+              <button onClick={() => setActiveSection('contact')} className="home-option-btn">
+                Contact
+              </button>
+              <button onClick={() => setIsTerminalOpen(true)} className="home-option-btn console-btn-opt">
+                Developer Console (CLI)
+              </button>
+            </div>
+
+            {/* Topics Filter & Search Wrapper */}
+            <div className="home-filter-block glass-card">
+              <div className="home-topics-section">
+                <span className="topics-heading">Topics:</span>
+                <div className="topics-list-wrap">
+                  {['All', 'Graphics', 'CSS', 'WebAssembly', 'Systems'].map((topic) => (
+                    <button
+                      key={topic}
+                      className={`topic-filter-btn ${homeSelectedTopic === topic ? 'active' : ''}`}
+                      onClick={() => setHomeSelectedTopic(topic)}
+                    >
+                      {topic}
+                    </button>
+                  ))}
                 </div>
               </div>
 
-              {/* Graphical Blueprint Panel */}
-              <div className="hero-visual-side glass-card">
-                <div className="visual-terminal-mock">
-                  <div className="terminal-header">
-                    <span className="terminal-dot red" />
-                    <span className="terminal-dot yellow" />
-                    <span className="terminal-dot green" />
-                    <span className="terminal-tab">sathish@devlog:~</span>
-                  </div>
-                  <pre className="terminal-mock-code">
-{`$ rustc --version
-rustc 1.80.0-nightly (wasm32-unknown-unknown)
-
-$ make build-all
-[1/4] Compiling raytracer.rs... OK
-[2/4] Packing wasm-bindgen packages... OK
-[3/4] Compiling vertex_shader.glsl... OK
-[4/4] Starting local hot-reload devserver...
-
-STATUS: SD_DEVLOG is active and listening.`}
-                  </pre>
-                </div>
+              <div className="home-search-bar">
+                <Search size={18} className="search-bar-icon" />
+                <input
+                  type="text"
+                  placeholder="Search articles, topics, or #tags..."
+                  value={homeSearchQuery}
+                  onChange={(e) => setHomeSearchQuery(e.target.value)}
+                  className="home-search-input"
+                />
+                {homeSearchQuery && (
+                  <button onClick={() => setHomeSearchQuery('')} className="search-clear-btn">
+                    Clear
+                  </button>
+                )}
               </div>
-            </section>
+            </div>
 
-            {/* Core Tech honeycomb list */}
-            <TechStack />
-
-            {/* Featured Blog posts preview */}
-            <section className="featured-posts-section">
+            {/* Published Articles List */}
+            <section className="home-articles-list-section">
               <div className="section-header">
-                <h2 className="text-gradient-orange">Featured publications</h2>
-                <p className="section-subtitle">Read details about micro-architecture optimization, CSS layers, and browser concurrency.</p>
+                <h2 className="text-gradient-cyan-purple">Published Articles</h2>
+                <p className="section-subtitle">Read logs detailing systems execution and shader compilations.</p>
               </div>
-              <div className="featured-posts-grid">
-                {articles.filter(a => a.featured).map(art => (
-                  <article key={art.id} className="featured-post-card glass-card" onClick={() => setActiveSection(`article-${art.id}`)}>
-                    <span className="post-card-category">{art.category}</span>
-                    <h3 className="post-card-title">{art.title}</h3>
-                    <p className="post-card-excerpt">{art.excerpt}</p>
-                    <div className="post-card-footer">
-                      <span className="post-card-date">{art.date}</span>
-                      <span className="read-more-link flex-center">
-                        <span>Read Post</span>
-                        <ArrowRight size={14} />
-                      </span>
-                    </div>
-                  </article>
-                ))}
+
+              <div className="home-articles-grid">
+                {filteredArticles.length > 0 ? (
+                  filteredArticles.map((art) => (
+                    <article
+                      key={art.id}
+                      className="featured-post-card glass-card"
+                      onClick={() => setActiveSection(`article-${art.id}`)}
+                    >
+                      <span className="post-card-category">{art.category}</span>
+                      <h3 className="post-card-title">{art.title}</h3>
+                      <p className="post-card-excerpt">{art.excerpt}</p>
+                      <div className="post-card-footer">
+                        <span className="post-card-date">{art.date}</span>
+                        <span className="read-more-link flex-center">
+                          <span>Read Article</span>
+                          <ArrowRight size={14} />
+                        </span>
+                      </div>
+                    </article>
+                  ))
+                ) : (
+                  <div className="no-articles-found flex-center">
+                    <p>No articles found matching "{homeSearchQuery}"</p>
+                  </div>
+                )}
               </div>
             </section>
           </div>
         );
+      }
 
       case 'articles':
         return (
