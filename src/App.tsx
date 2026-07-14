@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { ArrowRight, Mail, Search } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Mail, Search } from 'lucide-react';
 import { Github, Linkedin } from './components/BrandIcons';
 import Terminal from './components/Terminal';
 import TerminalContact from './components/TerminalContact';
@@ -409,6 +409,16 @@ function App() {
       <canvas ref={canvasRef} className="background-canvas" />
       <div className="grid-pattern" aria-hidden="true" />
       <div className="radial-glow" aria-hidden="true" />
+
+      {/* Back to Portfolio Link (Top Left) */}
+      <a 
+        href="https://sathishdusharla.tech" 
+        className="back-portfolio-btn"
+        rel="noopener noreferrer"
+      >
+        <ArrowLeft size={14} />
+        <span>Back to Portfolio</span>
+      </a>
 
       {/* Core main wrapper section */}
       <main className="main-content" id="main-content-area">
