@@ -2,15 +2,14 @@ import { useState, useEffect, useRef } from 'react';
 import { ArrowRight, Mail, Search } from 'lucide-react';
 import { Github, Linkedin } from './components/BrandIcons';
 import Terminal from './components/Terminal';
-import ProjectCard from './components/ProjectCard';
 import ProjectModal from './components/ProjectModal';
-import Timeline from './components/Timeline';
 import TerminalContact from './components/TerminalContact';
 import ArticleReader from './components/ArticleReader';
 import { projects } from './data/projects';
 import type { Project } from './data/projects';
 import { articles } from './data/articles';
 import type { Article } from './data/articles';
+import { achievements } from './data/achievements';
 import './App.css';
 
 function App() {
@@ -19,7 +18,6 @@ function App() {
   const [isTerminalOpen, setIsTerminalOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   
-  const [projectFilter, setProjectFilter] = useState<string>('All');
   const [homeSearchQuery, setHomeSearchQuery] = useState('');
   const [homeSelectedTopic, setHomeSelectedTopic] = useState('All');
   
@@ -111,10 +109,43 @@ function App() {
     };
   }, []);
 
-  // Filter projects list
-  const filteredProjects = projectFilter === 'All' 
-    ? projects 
-    : projects.filter((p) => p.category === projectFilter || p.tech.includes(projectFilter));
+  // Filter systems based on global search + topic selection
+  const filteredArticles = articles.filter(art => {
+    const matchesTopic = homeSelectedTopic === 'All' || art.category === homeSelectedTopic || art.tags.includes(homeSelectedTopic);
+    const matchesSearch = art.title.toLowerCase().includes(homeSearchQuery.toLowerCase()) ||
+                          art.excerpt.toLowerCase().includes(homeSearchQuery.toLowerCase()) ||
+                          art.tags.some(tag => tag.toLowerCase().includes(homeSearchQuery.toLowerCase()));
+    return matchesTopic && matchesSearch;
+  });
+
+  const filteredProjects = projects.filter(proj => {
+    const matchesTopic = homeSelectedTopic === 'All' || proj.category === homeSelectedTopic || proj.tech.includes(homeSelectedTopic);
+    const matchesSearch = proj.title.toLowerCase().includes(homeSearchQuery.toLowerCase()) ||
+                          proj.description.toLowerCase().includes(homeSearchQuery.toLowerCase()) ||
+                          proj.tech.some(t => t.toLowerCase().includes(homeSearchQuery.toLowerCase()));
+    return matchesTopic && matchesSearch;
+  });
+
+  const filteredAchievements = achievements.filter(ach => {
+    let matchesTopic = true;
+    if (homeSelectedTopic !== 'All') {
+      const topicLower = homeSelectedTopic.toLowerCase();
+      const descLower = ach.description.toLowerCase() + " " + ach.title.toLowerCase() + " " + ach.type.toLowerCase();
+      if (topicLower === 'graphics') {
+        matchesTopic = descLower.includes('graphics') || descLower.includes('shader') || descLower.includes('fluid') || descLower.includes('canvas');
+      } else if (topicLower === 'webassembly') {
+        matchesTopic = descLower.includes('webassembly') || descLower.includes('wasm') || descLower.includes('rust');
+      } else if (topicLower === 'systems') {
+        matchesTopic = descLower.includes('systems') || descLower.includes('architecture') || descLower.includes('kernel') || descLower.includes('micro-frontend') || descLower.includes('cloud') || descLower.includes('distributed');
+      } else {
+        matchesTopic = descLower.includes(topicLower);
+      }
+    }
+    const matchesSearch = ach.title.toLowerCase().includes(homeSearchQuery.toLowerCase()) ||
+                          ach.description.toLowerCase().includes(homeSearchQuery.toLowerCase()) ||
+                          ach.subtitle.toLowerCase().includes(homeSearchQuery.toLowerCase());
+    return matchesTopic && matchesSearch;
+  });
 
   // Handle navigations from Terminal console commands
   const handleTerminalNavigate = (target: string) => {
@@ -140,6 +171,21 @@ function App() {
     }
   };
 
+  // Dynamically map projects to article cards
+  const getArticleProjectLink = (id: string) => {
+    if (id === 'optimizing-canvas-content-visibility') return 'ShaderFlow';
+    if (id === 'wasm-multithreading-sharedarraybuffer') return 'WasmRay';
+    if (id === 'css-cascade-layers-guide') return 'Cascade Core';
+    return null;
+  };
+
+  const getArticleDomainLink = (id: string) => {
+    if (id === 'optimizing-canvas-content-visibility') return 'Graphics / WebGL';
+    if (id === 'wasm-multithreading-sharedarraybuffer') return 'Systems / WASM';
+    if (id === 'css-cascade-layers-guide') return 'CSS Architecture';
+    return 'Systems Development';
+  };
+
   const renderContent = () => {
     if (readingArticle) {
       return (
@@ -151,128 +197,149 @@ function App() {
     }
 
     switch (activeTab) {
-      case 'articles': {
-        const filteredArticles = articles.filter(art => {
-          const matchesTopic = homeSelectedTopic === 'All' || art.category === homeSelectedTopic || art.tags.includes(homeSelectedTopic);
-          const matchesSearch = art.title.toLowerCase().includes(homeSearchQuery.toLowerCase()) ||
-                                art.excerpt.toLowerCase().includes(homeSearchQuery.toLowerCase()) ||
-                                art.tags.some(tag => tag.toLowerCase().includes(homeSearchQuery.toLowerCase()));
-          return matchesTopic && matchesSearch;
-        });
-
+      case 'articles':
         return (
-          <div className="section-home-wrap">
-            {/* Topics Filter & Search Wrapper */}
-            <div className="home-filter-block glass-card">
-              <div className="home-topics-section">
-                <span className="topics-heading">Topics:</span>
-                <div className="topics-list-wrap">
-                  {['All', 'Graphics', 'CSS', 'WebAssembly', 'Systems'].map((topic) => (
-                    <button
-                      key={topic}
-                      className={`topic-filter-btn ${homeSelectedTopic === topic ? 'active' : ''}`}
-                      onClick={() => setHomeSelectedTopic(topic)}
-                    >
-                      {topic}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="home-search-bar">
-                <Search size={18} className="search-bar-icon" />
-                <input
-                  type="text"
-                  placeholder="Search articles, topics, or #tags..."
-                  value={homeSearchQuery}
-                  onChange={(e) => setHomeSearchQuery(e.target.value)}
-                  className="home-search-input"
-                />
-                {homeSearchQuery && (
-                  <button onClick={() => setHomeSearchQuery('')} className="search-clear-btn">
-                    Clear
-                  </button>
-                )}
-              </div>
+          <div className="home-articles-list-section">
+            <div className="section-header">
+              <h2 className="text-gradient-cyan-purple">Research Logs</h2>
+              <p className="section-subtitle">Deep technical logs detailing compiling architectures and system optimizations.</p>
             </div>
 
-            {/* Published Articles List */}
-            <section className="home-articles-list-section">
-              <div className="section-header">
-                <h2 className="text-gradient-cyan-purple">Published Articles</h2>
-                <p className="section-subtitle">Read logs detailing systems execution and shader compilations.</p>
-              </div>
-
-              <div className="home-articles-grid">
-                {filteredArticles.length > 0 ? (
-                  filteredArticles.map((art) => (
+            <div className="home-articles-grid">
+              {filteredArticles.length > 0 ? (
+                filteredArticles.map((art) => {
+                  const linkedProj = getArticleProjectLink(art.id);
+                  const domainLabel = getArticleDomainLink(art.id);
+                  return (
                     <article
                       key={art.id}
                       className="featured-post-card glass-card"
                       onClick={() => setReadingArticle(art)}
                     >
-                      <span className="post-card-category">{art.category}</span>
+                      <div className="card-top-badges">
+                        <span className="post-card-category badge-research">Research</span>
+                        <span className="post-card-category badge-domain">{domainLabel}</span>
+                      </div>
+                      
                       <h3 className="post-card-title">{art.title}</h3>
                       <p className="post-card-excerpt">{art.excerpt}</p>
+                      
+                      {linkedProj && (
+                        <div className="card-linked-project">
+                          <span className="linked-proj-tag">Linked Project:</span>
+                          <span className="linked-proj-val">{linkedProj}</span>
+                        </div>
+                      )}
+
                       <div className="post-card-footer">
                         <span className="post-card-date">{art.date}</span>
                         <span className="read-more-link flex-center">
-                          <span>Read Article</span>
+                          <span>Read Log</span>
                           <ArrowRight size={14} />
                         </span>
                       </div>
                     </article>
-                  ))
-                ) : (
-                  <div className="no-articles-found flex-center">
-                    <p>No articles found matching "{homeSearchQuery}"</p>
-                  </div>
-                )}
-              </div>
-            </section>
+                  );
+                })
+              ) : (
+                <div className="no-articles-found flex-center">
+                  <p>No research logs found matching topic/search filters.</p>
+                </div>
+              )}
+            </div>
           </div>
         );
-      }
 
       case 'projects':
         return (
-          <div className="projects-page-wrap animate-fade-in">
+          <div className="home-articles-list-section">
             <div className="section-header">
-              <h2 className="text-gradient-cyan-purple">Interactive portfolio</h2>
-              <p className="section-subtitle">Browse through visual simulations, Bare Metal systems, and parallel processor wrappers.</p>
+              <h2 className="text-gradient-cyan-purple">Project Repositories</h2>
+              <p className="section-subtitle">Interactive systems and visual simulators compiled natively for the browser.</p>
             </div>
 
-            {/* Filter Pills */}
-            <div className="projects-filter-bar">
-              {['All', 'WebAssembly', 'Graphics', 'Systems', 'AI', 'React'].map((category) => (
-                <button
-                  key={category}
-                  className={`filter-pill-btn ${projectFilter === category ? 'active' : ''}`}
-                  onClick={() => setProjectFilter(category)}
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
-
-            <div className="projects-grid">
+            <div className="home-articles-grid">
               {filteredProjects.length > 0 ? (
-                filteredProjects.map((project) => (
-                  <ProjectCard 
-                    key={project.id} 
-                    project={project} 
-                    onSelect={(p) => setSelectedProject(p)} 
-                  />
+                filteredProjects.map((proj) => (
+                  <article
+                    key={proj.id}
+                    className="featured-post-card glass-card"
+                    onClick={() => setSelectedProject(proj)}
+                  >
+                    <div className="card-top-badges">
+                      <span className="post-card-category badge-project">Project</span>
+                      <span className="post-card-category badge-domain">Domain: {proj.category}</span>
+                    </div>
+
+                    <h3 className="post-card-title">{proj.title}</h3>
+                    <p className="post-card-excerpt">{proj.description}</p>
+
+                    <div className="card-tech-pills">
+                      {proj.tech.slice(0, 3).map((t, idx) => (
+                        <span key={idx} className="tech-pill-span">#{t}</span>
+                      ))}
+                      {proj.tech.length > 3 && <span className="tech-pill-span">+{proj.tech.length - 3} more</span>}
+                    </div>
+
+                    <div className="post-card-footer">
+                      <span className="post-card-date">Stars: ⭐ {proj.stats.stars || 0}</span>
+                      <span className="read-more-link flex-center">
+                        <span>Inspect Repository</span>
+                        <ArrowRight size={14} />
+                      </span>
+                    </div>
+                  </article>
                 ))
               ) : (
-                <p className="no-projects-text">No active repositories matching the filter.</p>
+                <div className="no-articles-found flex-center">
+                  <p>No projects found matching topic/search filters.</p>
+                </div>
               )}
             </div>
           </div>
         );
 
       case 'milestones':
-        return <div className="animate-fade-in"><Timeline /></div>;
+        return (
+          <div className="home-articles-list-section">
+            <div className="section-header">
+              <h2 className="text-gradient-cyan-purple">Achievements & Milestones</h2>
+              <p className="section-subtitle">A chronological record of architectural successes, awards, and engineering certificates.</p>
+            </div>
+
+            <div className="home-articles-grid">
+              {filteredAchievements.length > 0 ? (
+                filteredAchievements.map((ach) => (
+                  <article
+                    key={ach.id}
+                    className="featured-post-card glass-card"
+                  >
+                    <div className="card-top-badges">
+                      <span className="post-card-category badge-achievement">Achievement</span>
+                      <span className="post-card-category badge-domain">{ach.type.toUpperCase()}</span>
+                    </div>
+
+                    <h3 className="post-card-title">{ach.title}</h3>
+                    <p className="post-card-excerpt">{ach.description}</p>
+
+                    <div className="card-linked-project">
+                      <span className="linked-proj-tag">Organization:</span>
+                      <span className="linked-proj-val">{ach.subtitle}</span>
+                    </div>
+
+                    <div className="post-card-footer">
+                      <span className="post-card-date">Year: {ach.year}</span>
+                    </div>
+                  </article>
+                ))
+              ) : (
+                <div className="no-articles-found flex-center">
+                  <p>No achievements found matching topic/search filters.</p>
+                </div>
+              )}
+            </div>
+          </div>
+        );
 
       case 'contact':
         return <div className="animate-fade-in"><TerminalContact /></div>;
@@ -281,6 +348,8 @@ function App() {
         return <div>Section not found.</div>;
     }
   };
+
+  const showFilterBlock = !readingArticle && activeTab !== 'contact';
 
   return (
     <div className="app-container">
@@ -291,7 +360,7 @@ function App() {
 
       {/* Core main wrapper section */}
       <main className="main-content" id="main-content-area">
-        {/* Top Brand Header (Big title as requested) */}
+        {/* Top Brand Header (Big title header) */}
         <header className="home-brand-block flex-center">
           <h1 className="home-title-logo">SD DEVLOG</h1>
           <p className="home-slogan-text">Thoughts that trigger builds, builds that teach lessons.</p>
@@ -303,7 +372,7 @@ function App() {
             onClick={() => { setActiveTab('articles'); setReadingArticle(null); }} 
             className={`home-option-btn ${activeTab === 'articles' && !readingArticle ? 'active' : ''}`}
           >
-            Tech News
+            Research
           </button>
           <button 
             onClick={() => { setActiveTab('projects'); setReadingArticle(null); }} 
@@ -330,6 +399,42 @@ function App() {
             Developer Console (CLI)
           </button>
         </div>
+
+        {/* Unified Static Search & Topic Filter Block */}
+        {showFilterBlock && (
+          <div className="home-filter-block glass-card">
+            <div className="home-topics-section">
+              <span className="topics-heading">Domains:</span>
+              <div className="topics-list-wrap">
+                {['All', 'Graphics', 'WebAssembly', 'Systems', 'AI'].map((topic) => (
+                  <button
+                    key={topic}
+                    className={`topic-filter-btn ${homeSelectedTopic === topic ? 'active' : ''}`}
+                    onClick={() => setHomeSelectedTopic(topic)}
+                  >
+                    {topic}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="home-search-bar">
+              <Search size={18} className="search-bar-icon" />
+              <input
+                type="text"
+                placeholder={`Search ${activeTab === 'articles' ? 'research' : activeTab === 'projects' ? 'projects' : 'achievements'}...`}
+                value={homeSearchQuery}
+                onChange={(e) => setHomeSearchQuery(e.target.value)}
+                className="home-search-input"
+              />
+              {homeSearchQuery && (
+                <button onClick={() => setHomeSearchQuery('')} className="search-clear-btn">
+                  Clear
+                </button>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Dynamic Content Display Area */}
         <div className="dynamic-content-wrap">
