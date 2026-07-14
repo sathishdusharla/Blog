@@ -13,7 +13,7 @@ import { achievements } from './data/achievements';
 import './App.css';
 
 function App() {
-  const [activeTab, setActiveTab] = useState<'articles' | 'projects' | 'milestones' | 'contact'>('articles');
+  const [activeTab, setActiveTab] = useState<'all' | 'articles' | 'projects' | 'milestones' | 'contact'>('all');
   const [readingArticle, setReadingArticle] = useState<Article | null>(null);
   const [isTerminalOpen, setIsTerminalOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
@@ -196,51 +196,133 @@ function App() {
       );
     }
 
+    const renderArticleCard = (art: Article) => {
+      const linkedProj = getArticleProjectLink(art.id);
+      const domainLabel = getArticleDomainLink(art.id);
+      return (
+        <article
+          key={`art-${art.id}`}
+          className="featured-post-card glass-card"
+          onClick={() => setReadingArticle(art)}
+        >
+          <div className="card-top-badges">
+            <span className="post-card-category badge-research">Research</span>
+            <span className="post-card-category badge-domain">{domainLabel}</span>
+          </div>
+          
+          <h3 className="post-card-title">{art.title}</h3>
+          <p className="post-card-excerpt">{art.excerpt}</p>
+          
+          {linkedProj && (
+            <div className="card-linked-project">
+              <span className="linked-proj-tag">Linked Project:</span>
+              <span className="linked-proj-val">{linkedProj}</span>
+            </div>
+          )}
+
+          <div className="post-card-footer">
+            <span className="post-card-date">{art.date}</span>
+            <span className="read-more-link flex-center">
+              <span>Read Log</span>
+              <ArrowRight size={14} />
+            </span>
+          </div>
+        </article>
+      );
+    };
+
+    const renderProjectCard = (proj: Project) => {
+      return (
+        <article
+          key={`proj-${proj.id}`}
+          className="featured-post-card glass-card"
+          onClick={() => setSelectedProject(proj)}
+        >
+          <div className="card-top-badges">
+            <span className="post-card-category badge-project">Project</span>
+            <span className="post-card-category badge-domain">Domain: {proj.category}</span>
+          </div>
+
+          <h3 className="post-card-title">{proj.title}</h3>
+          <p className="post-card-excerpt">{proj.description}</p>
+
+          <div className="card-tech-pills">
+            {proj.tech.slice(0, 3).map((t, idx) => (
+              <span key={idx} className="tech-pill-span">#{t}</span>
+            ))}
+            {proj.tech.length > 3 && <span className="tech-pill-span">+{proj.tech.length - 3} more</span>}
+          </div>
+
+          <div className="post-card-footer">
+            <span className="post-card-date">Stars: ⭐ {proj.stats.stars || 0}</span>
+            <span className="read-more-link flex-center">
+              <span>Inspect Repository</span>
+              <ArrowRight size={14} />
+            </span>
+          </div>
+        </article>
+      );
+    };
+
+    const renderAchievementCard = (ach: any) => {
+      return (
+        <article
+          key={`ach-${ach.id}`}
+          className="featured-post-card glass-card"
+        >
+          <div className="card-top-badges">
+            <span className="post-card-category badge-achievement">Achievement</span>
+            <span className="post-card-category badge-domain">{ach.type.toUpperCase()}</span>
+          </div>
+
+          <h3 className="post-card-title">{ach.title}</h3>
+          <p className="post-card-excerpt">{ach.description}</p>
+
+          <div className="card-linked-project">
+            <span className="linked-proj-tag">Organization:</span>
+            <span className="linked-proj-val">{ach.subtitle}</span>
+          </div>
+
+          <div className="post-card-footer">
+            <span className="post-card-date">Year: {ach.year}</span>
+          </div>
+        </article>
+      );
+    };
+
     switch (activeTab) {
+      case 'all': {
+        const allCards = [
+          ...filteredProjects.map(p => ({ type: 'project', data: p, key: `proj-${p.id}` })),
+          ...filteredArticles.map(a => ({ type: 'article', data: a, key: `art-${a.id}` })),
+          ...filteredAchievements.map(ach => ({ type: 'achievement', data: ach, key: `ach-${ach.id}` }))
+        ];
+
+        return (
+          <div className="home-articles-list-section">
+            <div className="home-articles-grid">
+              {allCards.length > 0 ? (
+                allCards.map(item => {
+                  if (item.type === 'article') return renderArticleCard(item.data as Article);
+                  if (item.type === 'project') return renderProjectCard(item.data as Project);
+                  return renderAchievementCard(item.data);
+                })
+              ) : (
+                <div className="no-articles-found flex-center">
+                  <p>No records found matching topic/search filters.</p>
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      }
+
       case 'articles':
         return (
           <div className="home-articles-list-section">
-            <div className="section-header">
-              <h2 className="text-gradient-cyan-purple">Research Logs</h2>
-              <p className="section-subtitle">Deep technical logs detailing compiling architectures and system optimizations.</p>
-            </div>
-
             <div className="home-articles-grid">
               {filteredArticles.length > 0 ? (
-                filteredArticles.map((art) => {
-                  const linkedProj = getArticleProjectLink(art.id);
-                  const domainLabel = getArticleDomainLink(art.id);
-                  return (
-                    <article
-                      key={art.id}
-                      className="featured-post-card glass-card"
-                      onClick={() => setReadingArticle(art)}
-                    >
-                      <div className="card-top-badges">
-                        <span className="post-card-category badge-research">Research</span>
-                        <span className="post-card-category badge-domain">{domainLabel}</span>
-                      </div>
-                      
-                      <h3 className="post-card-title">{art.title}</h3>
-                      <p className="post-card-excerpt">{art.excerpt}</p>
-                      
-                      {linkedProj && (
-                        <div className="card-linked-project">
-                          <span className="linked-proj-tag">Linked Project:</span>
-                          <span className="linked-proj-val">{linkedProj}</span>
-                        </div>
-                      )}
-
-                      <div className="post-card-footer">
-                        <span className="post-card-date">{art.date}</span>
-                        <span className="read-more-link flex-center">
-                          <span>Read Log</span>
-                          <ArrowRight size={14} />
-                        </span>
-                      </div>
-                    </article>
-                  );
-                })
+                filteredArticles.map(renderArticleCard)
               ) : (
                 <div className="no-articles-found flex-center">
                   <p>No research logs found matching topic/search filters.</p>
@@ -253,43 +335,9 @@ function App() {
       case 'projects':
         return (
           <div className="home-articles-list-section">
-            <div className="section-header">
-              <h2 className="text-gradient-cyan-purple">Project Repositories</h2>
-              <p className="section-subtitle">Interactive systems and visual simulators compiled natively for the browser.</p>
-            </div>
-
             <div className="home-articles-grid">
               {filteredProjects.length > 0 ? (
-                filteredProjects.map((proj) => (
-                  <article
-                    key={proj.id}
-                    className="featured-post-card glass-card"
-                    onClick={() => setSelectedProject(proj)}
-                  >
-                    <div className="card-top-badges">
-                      <span className="post-card-category badge-project">Project</span>
-                      <span className="post-card-category badge-domain">Domain: {proj.category}</span>
-                    </div>
-
-                    <h3 className="post-card-title">{proj.title}</h3>
-                    <p className="post-card-excerpt">{proj.description}</p>
-
-                    <div className="card-tech-pills">
-                      {proj.tech.slice(0, 3).map((t, idx) => (
-                        <span key={idx} className="tech-pill-span">#{t}</span>
-                      ))}
-                      {proj.tech.length > 3 && <span className="tech-pill-span">+{proj.tech.length - 3} more</span>}
-                    </div>
-
-                    <div className="post-card-footer">
-                      <span className="post-card-date">Stars: ⭐ {proj.stats.stars || 0}</span>
-                      <span className="read-more-link flex-center">
-                        <span>Inspect Repository</span>
-                        <ArrowRight size={14} />
-                      </span>
-                    </div>
-                  </article>
-                ))
+                filteredProjects.map(renderProjectCard)
               ) : (
                 <div className="no-articles-found flex-center">
                   <p>No projects found matching topic/search filters.</p>
@@ -302,36 +350,9 @@ function App() {
       case 'milestones':
         return (
           <div className="home-articles-list-section">
-            <div className="section-header">
-              <h2 className="text-gradient-cyan-purple">Achievements & Milestones</h2>
-              <p className="section-subtitle">A chronological record of architectural successes, awards, and engineering certificates.</p>
-            </div>
-
             <div className="home-articles-grid">
               {filteredAchievements.length > 0 ? (
-                filteredAchievements.map((ach) => (
-                  <article
-                    key={ach.id}
-                    className="featured-post-card glass-card"
-                  >
-                    <div className="card-top-badges">
-                      <span className="post-card-category badge-achievement">Achievement</span>
-                      <span className="post-card-category badge-domain">{ach.type.toUpperCase()}</span>
-                    </div>
-
-                    <h3 className="post-card-title">{ach.title}</h3>
-                    <p className="post-card-excerpt">{ach.description}</p>
-
-                    <div className="card-linked-project">
-                      <span className="linked-proj-tag">Organization:</span>
-                      <span className="linked-proj-val">{ach.subtitle}</span>
-                    </div>
-
-                    <div className="post-card-footer">
-                      <span className="post-card-date">Year: {ach.year}</span>
-                    </div>
-                  </article>
-                ))
+                filteredAchievements.map(renderAchievementCard)
               ) : (
                 <div className="no-articles-found flex-center">
                   <p>No achievements found matching topic/search filters.</p>
@@ -368,6 +389,12 @@ function App() {
 
         {/* Options Navigation Buttons */}
         <div className="home-options-bar flex-center">
+          <button 
+            onClick={() => { setActiveTab('all'); setReadingArticle(null); }} 
+            className={`home-option-btn ${activeTab === 'all' && !readingArticle ? 'active' : ''}`}
+          >
+            All
+          </button>
           <button 
             onClick={() => { setActiveTab('articles'); setReadingArticle(null); }} 
             className={`home-option-btn ${activeTab === 'articles' && !readingArticle ? 'active' : ''}`}
@@ -422,7 +449,7 @@ function App() {
               <Search size={18} className="search-bar-icon" />
               <input
                 type="text"
-                placeholder={`Search ${activeTab === 'articles' ? 'research' : activeTab === 'projects' ? 'projects' : 'achievements'}...`}
+                placeholder={`Search ${activeTab === 'all' ? 'logs' : activeTab === 'articles' ? 'research' : activeTab === 'projects' ? 'projects' : 'achievements'}...`}
                 value={homeSearchQuery}
                 onChange={(e) => setHomeSearchQuery(e.target.value)}
                 className="home-search-input"
