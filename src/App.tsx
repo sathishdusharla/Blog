@@ -57,8 +57,12 @@ function App() {
       ctx.fillRect(0, 0, width, height);
 
       const colorScheme = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
-      const connectionColor = colorScheme === 'light' ? '200, 204, 218' : '155, 81, 224';
-      const particleColor = colorScheme === 'light' ? 'rgba(138, 63, 252, 0.4)' : 'rgba(230, 0, 0, 0.4)';
+      const connectionColor = colorScheme === 'light' ? '200, 204, 218' : '230, 0, 0';
+      const particleColor = colorScheme === 'light' ? 'rgba(138, 63, 252, 0.5)' : 'rgba(230, 0, 0, 0.6)';
+
+      // Apply shadows for glowing visual effects
+      ctx.shadowBlur = 6;
+      ctx.shadowColor = colorScheme === 'light' ? 'rgba(138, 63, 252, 0.6)' : 'rgba(230, 0, 0, 0.8)';
 
       particles.forEach((p, idx) => {
         p.x += p.vx;
@@ -86,6 +90,8 @@ function App() {
           }
         }
       });
+      // Reset shadows for remaining draw operations to preserve performance
+      ctx.shadowBlur = 0;
 
       animationFrameId = requestAnimationFrame(draw);
     };

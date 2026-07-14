@@ -30,26 +30,49 @@ export const UnifiedReader: React.FC<UnifiedReaderProps> = ({ item, onBack }) =>
   useEffect(() => {
     const preBlocks = document.querySelectorAll('.article-reader-body pre');
     preBlocks.forEach((pre: any) => {
-      if (pre.querySelector('.copy-code-btn')) return;
+      if (pre.parentElement.classList.contains('code-block-wrapper')) return;
+
+      const code = pre.querySelector('code');
+      let langText = 'CODE';
+      if (code) {
+        const classes = Array.from(code.classList);
+        const langClass = classes.find((c: any) => c.startsWith('language-')) as string | undefined;
+        if (langClass) {
+          langText = langClass.replace('language-', '').toUpperCase();
+        }
+      }
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'code-block-wrapper';
+
+      const header = document.createElement('div');
+      header.className = 'code-block-header';
       
-      const btn = document.createElement('button');
-      btn.className = 'copy-code-btn';
-      btn.textContent = 'Copy';
+      const langBadge = document.createElement('span');
+      langBadge.className = 'code-block-lang';
+      langBadge.textContent = langText;
       
-      btn.addEventListener('click', () => {
-        const codeText = pre.querySelector('code')?.textContent || '';
+      const copyBtn = document.createElement('button');
+      copyBtn.className = 'copy-code-btn';
+      copyBtn.textContent = 'Copy';
+      copyBtn.addEventListener('click', () => {
+        const codeText = code?.textContent || '';
         navigator.clipboard.writeText(codeText).then(() => {
-          btn.textContent = 'Copied!';
-          btn.style.color = 'var(--color-primary)';
+          copyBtn.textContent = 'Copied!';
+          copyBtn.style.color = 'var(--color-primary)';
           setTimeout(() => {
-            btn.textContent = 'Copy';
-            btn.style.color = '';
+            copyBtn.textContent = 'Copy';
+            copyBtn.style.color = '';
           }, 2000);
         });
       });
-      
-      pre.style.position = 'relative';
-      pre.appendChild(btn);
+
+      header.appendChild(langBadge);
+      header.appendChild(copyBtn);
+
+      pre.parentNode.insertBefore(wrapper, pre);
+      wrapper.appendChild(header);
+      wrapper.appendChild(pre);
     });
   }, [item]);
 
