@@ -420,46 +420,52 @@
   }
 
   .badge-research {
-    background: rgba(138, 63, 252, 0.15);
-    color: #8a3ffc;
-    border: 1px solid rgba(138, 63, 252, 0.3);
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 0.7rem;
-    font-weight: 700;
+    background: rgba(138, 63, 252, 0.08);
+    color: #b085ff;
+    border: 1px solid rgba(138, 63, 252, 0.35);
+    box-shadow: 0 0 8px rgba(138, 63, 252, 0.15);
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.68rem;
+    font-weight: 800;
     text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
   .badge-project {
-    background: rgba(230, 0, 0, 0.12);
-    color: var(--color-primary);
-    border: 1px solid rgba(230, 0, 0, 0.3);
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 0.7rem;
-    font-weight: 700;
+    background: rgba(255, 0, 51, 0.08);
+    color: #ff3366;
+    border: 1px solid rgba(255, 0, 51, 0.35);
+    box-shadow: 0 0 8px rgba(255, 0, 51, 0.15);
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.68rem;
+    font-weight: 800;
     text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
   .badge-achievement {
-    background: rgba(242, 201, 76, 0.15);
-    color: #f2c94c;
-    border: 1px solid rgba(242, 201, 76, 0.3);
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 0.7rem;
-    font-weight: 700;
+    background: rgba(242, 201, 76, 0.08);
+    color: #ffd64a;
+    border: 1px solid rgba(242, 201, 76, 0.35);
+    box-shadow: 0 0 8px rgba(242, 201, 76, 0.15);
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.68rem;
+    font-weight: 800;
     text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
   .badge-domain {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.03);
     color: var(--color-text-muted);
-    border: 1px solid var(--color-border);
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 0.7rem;
-    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.68rem;
+    font-weight: 700;
   }
 
   .card-linked-project {
