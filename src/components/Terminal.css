@@ -94,26 +94,6 @@
     color: #c5cdd8;
     font-size: 0.9rem;
     line-height: 1.5;
-    animation: terminal-flicker 0.18s infinite;
-    position: relative;
-  }
-
-  /* Scanline overlays for CRT feel */
-  .terminal-screen::after {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.12) 50%);
-    background-size: 100% 4px;
-    pointer-events: none;
-    z-index: 10;
-    opacity: 0.45;
-  }
-
-  @keyframes terminal-flicker {
-    0% { opacity: 0.988; }
-    50% { opacity: 0.996; }
-    100% { opacity: 0.988; }
   }
 
   .terminal-screen::-webkit-scrollbar {

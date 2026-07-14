@@ -7,26 +7,11 @@
     flex-direction: column;
   }
 
-  .app-container::after {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: linear-gradient(
-      rgba(18, 16, 16, 0) 50%, 
-      rgba(0, 0, 0, 0.12) 50%
-    ), linear-gradient(
-      90deg,
-      rgba(230, 0, 0, 0.02),
-      rgba(0, 240, 255, 0.01),
-      rgba(242, 201, 76, 0.02)
-    );
-    background-size: 100% 4px, 8px 100%;
-    z-index: 9999;
-    pointer-events: none;
-    opacity: 0.06;
+  .app-container {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
   }
 
   .background-canvas {
@@ -131,13 +116,8 @@
     margin-bottom: -18px; /* overlapping bottom line */
     margin-right: 195px; /* left aligned alignment shift to match NG style */
     user-select: none;
-    
-    background: linear-gradient(135deg, #0e0f12 0%, #3e4252 50%, #0e0f12 100%);
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: logo-shine-sweep 8s linear infinite;
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+    color: #0b0c10;
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.35);
   }
 
   .brand-logo-bottom-line {
@@ -148,25 +128,8 @@
     letter-spacing: -0.04em;
     text-transform: uppercase;
     user-select: none;
-    
-    background: linear-gradient(135deg, #121316 0%, #4f5466 50%, #121316 100%);
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: logo-shine-sweep 8s linear infinite;
-    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.5));
-  }
-
-  @keyframes logo-shine-sweep {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
+    color: #121316;
+    text-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
   }
 
   .sparkle-o {
@@ -341,53 +304,23 @@
   .featured-post-card {
     display: flex;
     flex-direction: column;
-    padding: 26px;
+    padding: 24px;
     text-align: left;
     cursor: pointer;
     height: 100%;
     position: relative;
     overflow: hidden;
-    transform-style: preserve-3d;
-    will-change: transform;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 18px;
-    backdrop-filter: blur(16px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-    transition: transform 0.15s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+    background: rgba(10, 11, 20, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
   }
 
   .featured-post-card:hover {
-    border-color: rgba(230, 0, 0, 0.25);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45), 0 0 20px rgba(230, 0, 0, 0.1);
-  }
-
-  /* Float card content layers in 3D parallax spaces */
-  .featured-post-card .card-top-badges {
-    transform: translateZ(25px);
-    transition: transform 0.2s ease;
-  }
-
-  .featured-post-card .post-card-title {
-    transform: translateZ(40px);
-    transition: transform 0.2s ease;
-    text-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
-  }
-
-  .featured-post-card .post-card-excerpt {
-    transform: translateZ(20px);
-    transition: transform 0.2s ease;
-  }
-
-  .featured-post-card .card-tech-pills,
-  .featured-post-card .card-linked-project {
-    transform: translateZ(15px);
-    transition: transform 0.2s ease;
-  }
-
-  .featured-post-card .post-card-footer {
-    transform: translateZ(30px);
-    transition: transform 0.2s ease;
+    transform: translateY(-4px);
+    border-color: rgba(230, 0, 0, 0.35);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35),
+                0 0 15px rgba(230, 0, 0, 0.05);
   }
 
   .featured-post-card::before {
