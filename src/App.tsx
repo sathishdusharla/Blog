@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { ArrowRight, Mail, Search } from 'lucide-react';
 import { Github, Linkedin } from './components/BrandIcons';
-import Header from './components/Header';
 import Terminal from './components/Terminal';
 import ProjectCard from './components/ProjectCard';
 import ProjectModal from './components/ProjectModal';
@@ -11,12 +10,15 @@ import ArticleReader from './components/ArticleReader';
 import { projects } from './data/projects';
 import type { Project } from './data/projects';
 import { articles } from './data/articles';
+import type { Article } from './data/articles';
 import './App.css';
 
 function App() {
-  const [activeSection, setActiveSection] = useState('home');
+  const [activeTab, setActiveTab] = useState<'articles' | 'projects' | 'milestones' | 'contact'>('articles');
+  const [readingArticle, setReadingArticle] = useState<Article | null>(null);
   const [isTerminalOpen, setIsTerminalOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  
   const [projectFilter, setProjectFilter] = useState<string>('All');
   const [homeSearchQuery, setHomeSearchQuery] = useState('');
   const [homeSelectedTopic, setHomeSelectedTopic] = useState('All');
@@ -42,7 +44,7 @@ function App() {
       radius: number;
     }> = [];
 
-    const particleCount = Math.min(Math.round(width / 25), 45); // Adapt to screen width
+    const particleCount = Math.min(Math.round(width / 25), 45);
     for (let i = 0; i < particleCount; i++) {
       particles.push({
         x: Math.random() * width,
@@ -54,7 +56,6 @@ function App() {
     }
 
     const draw = () => {
-      // Clear with slight trailing opacity
       ctx.fillStyle = document.documentElement.getAttribute('data-theme') === 'light' 
         ? 'rgba(244, 245, 248, 0.2)' 
         : 'rgba(6, 7, 12, 0.2)';
@@ -62,13 +63,12 @@ function App() {
 
       const colorScheme = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
       const connectionColor = colorScheme === 'light' ? '200, 204, 218' : '155, 81, 224';
-      const particleColor = colorScheme === 'light' ? 'rgba(138, 63, 252, 0.4)' : 'rgba(0, 242, 254, 0.4)';
+      const particleColor = colorScheme === 'light' ? 'rgba(138, 63, 252, 0.4)' : 'rgba(230, 0, 0, 0.4)';
 
       particles.forEach((p, idx) => {
         p.x += p.vx;
         p.y += p.vy;
 
-        // Bounce boundaries
         if (p.x < 0 || p.x > width) p.vx *= -1;
         if (p.y < 0 || p.y > height) p.vy *= -1;
 
@@ -77,7 +77,6 @@ function App() {
         ctx.fillStyle = particleColor;
         ctx.fill();
 
-        // Check connections
         for (let j = idx + 1; j < particles.length; j++) {
           const p2 = particles[j];
           const dist = Math.hypot(p.x - p2.x, p.y - p2.y);
@@ -117,18 +116,42 @@ function App() {
     ? projects 
     : projects.filter((p) => p.category === projectFilter || p.tech.includes(projectFilter));
 
-  const renderSection = () => {
-    // Article Reader Dynamic Route
-    if (activeSection.startsWith('article-')) {
-      const artId = activeSection.replace('article-', '');
+  // Handle navigations from Terminal console commands
+  const handleTerminalNavigate = (target: string) => {
+    if (target === 'projects') {
+      setActiveTab('projects');
+      setReadingArticle(null);
+    } else if (target === 'milestones') {
+      setActiveTab('milestones');
+      setReadingArticle(null);
+    } else if (target === 'contact') {
+      setActiveTab('contact');
+      setReadingArticle(null);
+    } else if (target === 'articles' || target === 'posts') {
+      setActiveTab('articles');
+      setReadingArticle(null);
+    } else if (target.startsWith('article-')) {
+      const artId = target.replace('article-', '');
       const article = articles.find((a) => a.id === artId);
       if (article) {
-        return <ArticleReader article={article} onBack={() => setActiveSection('articles')} />;
+        setActiveTab('articles');
+        setReadingArticle(article);
       }
     }
+  };
 
-    switch (activeSection) {
-      case 'home': {
+  const renderContent = () => {
+    if (readingArticle) {
+      return (
+        <ArticleReader 
+          article={readingArticle} 
+          onBack={() => setReadingArticle(null)} 
+        />
+      );
+    }
+
+    switch (activeTab) {
+      case 'articles': {
         const filteredArticles = articles.filter(art => {
           const matchesTopic = homeSelectedTopic === 'All' || art.category === homeSelectedTopic || art.tags.includes(homeSelectedTopic);
           const matchesSearch = art.title.toLowerCase().includes(homeSearchQuery.toLowerCase()) ||
@@ -139,31 +162,6 @@ function App() {
 
         return (
           <div className="section-home-wrap">
-            {/* Top Brand Header (Typographic visual matching uploaded design) */}
-            <header className="home-brand-block flex-center">
-              <h1 className="home-title-logo">SD DEVLOG</h1>
-              <p className="home-slogan-text">Thoughts that trigger builds, builds that teach lessons.</p>
-            </header>
-
-            {/* Options Navigation Buttons */}
-            <div className="home-options-bar flex-center">
-              <button onClick={() => setActiveSection('projects')} className="home-option-btn">
-                Projects
-              </button>
-              <button onClick={() => setActiveSection('milestones')} className="home-option-btn">
-                Achievements
-              </button>
-              <button onClick={() => setActiveSection('articles')} className="home-option-btn">
-                Tech News
-              </button>
-              <button onClick={() => setActiveSection('contact')} className="home-option-btn">
-                Contact
-              </button>
-              <button onClick={() => setIsTerminalOpen(true)} className="home-option-btn console-btn-opt">
-                Developer Console (CLI)
-              </button>
-            </div>
-
             {/* Topics Filter & Search Wrapper */}
             <div className="home-filter-block glass-card">
               <div className="home-topics-section">
@@ -211,7 +209,7 @@ function App() {
                     <article
                       key={art.id}
                       className="featured-post-card glass-card"
-                      onClick={() => setActiveSection(`article-${art.id}`)}
+                      onClick={() => setReadingArticle(art)}
                     >
                       <span className="post-card-category">{art.category}</span>
                       <h3 className="post-card-title">{art.title}</h3>
@@ -236,36 +234,9 @@ function App() {
         );
       }
 
-      case 'articles':
-        return (
-          <div className="articles-page-wrap">
-            <div className="section-header">
-              <h2 className="text-gradient-cyan-purple">Research & Tech News</h2>
-              <p className="section-subtitle">Technical logs compiled for software developers, shader artists, and systems engineers.</p>
-            </div>
-            
-            <div className="articles-grid-container">
-              {articles.map((art) => (
-                <article key={art.id} className="featured-post-card glass-card" onClick={() => setActiveSection(`article-${art.id}`)}>
-                  <span className="post-card-category">{art.category}</span>
-                  <h3 className="post-card-title">{art.title}</h3>
-                  <p className="post-card-excerpt">{art.excerpt}</p>
-                  <div className="post-card-footer">
-                    <span className="post-card-date">{art.date}</span>
-                    <span className="read-more-link flex-center">
-                      <span>Read Post</span>
-                      <ArrowRight size={14} />
-                    </span>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
-        );
-
       case 'projects':
         return (
-          <div className="projects-page-wrap">
+          <div className="projects-page-wrap animate-fade-in">
             <div className="section-header">
               <h2 className="text-gradient-cyan-purple">Interactive portfolio</h2>
               <p className="section-subtitle">Browse through visual simulations, Bare Metal systems, and parallel processor wrappers.</p>
@@ -301,10 +272,10 @@ function App() {
         );
 
       case 'milestones':
-        return <Timeline />;
+        return <div className="animate-fade-in"><Timeline /></div>;
 
       case 'contact':
-        return <TerminalContact />;
+        return <div className="animate-fade-in"><TerminalContact /></div>;
 
       default:
         return <div>Section not found.</div>;
@@ -318,16 +289,52 @@ function App() {
       <div className="grid-pattern" aria-hidden="true" />
       <div className="radial-glow" aria-hidden="true" />
 
-      {/* Main sticky navigation header */}
-      <Header
-        activeSection={activeSection}
-        setActiveSection={setActiveSection}
-        openTerminal={() => setIsTerminalOpen(true)}
-      />
-
       {/* Core main wrapper section */}
       <main className="main-content" id="main-content-area">
-        {renderSection()}
+        {/* Top Brand Header (Big title as requested) */}
+        <header className="home-brand-block flex-center">
+          <h1 className="home-title-logo">SD DEVLOG</h1>
+          <p className="home-slogan-text">Thoughts that trigger builds, builds that teach lessons.</p>
+        </header>
+
+        {/* Options Navigation Buttons */}
+        <div className="home-options-bar flex-center">
+          <button 
+            onClick={() => { setActiveTab('articles'); setReadingArticle(null); }} 
+            className={`home-option-btn ${activeTab === 'articles' && !readingArticle ? 'active' : ''}`}
+          >
+            Tech News
+          </button>
+          <button 
+            onClick={() => { setActiveTab('projects'); setReadingArticle(null); }} 
+            className={`home-option-btn ${activeTab === 'projects' && !readingArticle ? 'active' : ''}`}
+          >
+            Projects
+          </button>
+          <button 
+            onClick={() => { setActiveTab('milestones'); setReadingArticle(null); }} 
+            className={`home-option-btn ${activeTab === 'milestones' && !readingArticle ? 'active' : ''}`}
+          >
+            Achievements
+          </button>
+          <button 
+            onClick={() => { setActiveTab('contact'); setReadingArticle(null); }} 
+            className={`home-option-btn ${activeTab === 'contact' && !readingArticle ? 'active' : ''}`}
+          >
+            Contact
+          </button>
+          <button 
+            onClick={() => setIsTerminalOpen(true)} 
+            className="home-option-btn console-btn-opt"
+          >
+            Developer Console (CLI)
+          </button>
+        </div>
+
+        {/* Dynamic Content Display Area */}
+        <div className="dynamic-content-wrap">
+          {renderContent()}
+        </div>
       </main>
 
       {/* Retro/Neon Terminal overlay console */}
@@ -336,7 +343,7 @@ function App() {
           <div className="terminal-modal-wrap" onClick={(e) => e.stopPropagation()}>
             <Terminal 
               onClose={() => setIsTerminalOpen(false)} 
-              onNavigate={(sect) => setActiveSection(sect)}
+              onNavigate={handleTerminalNavigate}
             />
           </div>
         </div>
