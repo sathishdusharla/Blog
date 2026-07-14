@@ -169,6 +169,27 @@ function App() {
     }
   };
 
+  const handleCardMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateX = ((centerY - y) / centerY) * 8;
+    const rotateY = ((x - centerX) / centerX) * 8;
+    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.015, 1.015, 1.015)`;
+    card.style.setProperty('--shine-x', `${(x / rect.width) * 100}%`);
+    card.style.setProperty('--shine-y', `${(y / rect.height) * 100}%`);
+  };
+
+  const handleCardMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+    const card = e.currentTarget;
+    card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+    card.style.setProperty('--shine-x', '50%');
+    card.style.setProperty('--shine-y', '50%');
+  };
+
   // Dynamically map projects to article cards
   const getArticleProjectLink = (id: string) => {
     if (id === 'optimizing-canvas-content-visibility') return 'ShaderFlow';
@@ -202,6 +223,8 @@ function App() {
           key={`art-${art.id}`}
           className="featured-post-card glass-card"
           onClick={() => setActiveDetail({ type: 'article', data: art })}
+          onMouseMove={handleCardMouseMove}
+          onMouseLeave={handleCardMouseLeave}
         >
           <div className="card-top-badges">
             <span className="post-card-category badge-research">Research</span>
@@ -235,6 +258,8 @@ function App() {
           key={`proj-${proj.id}`}
           className="featured-post-card glass-card"
           onClick={() => setActiveDetail({ type: 'project', data: proj })}
+          onMouseMove={handleCardMouseMove}
+          onMouseLeave={handleCardMouseLeave}
         >
           <div className="card-top-badges">
             <span className="post-card-category badge-project">Project</span>
@@ -268,6 +293,8 @@ function App() {
           key={`ach-${ach.id}`}
           className="featured-post-card glass-card"
           onClick={() => setActiveDetail({ type: 'achievement', data: ach })}
+          onMouseMove={handleCardMouseMove}
+          onMouseLeave={handleCardMouseLeave}
         >
           <div className="card-top-badges">
             <span className="post-card-category badge-achievement">Achievement</span>

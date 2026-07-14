@@ -24,6 +24,18 @@ export const Terminal: React.FC<TerminalProps> = ({ onClose, onNavigate }) => {
   const terminalEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const commandsList = ['help', 'about', 'projects', 'posts', 'neofetch', 'contact', 'clear', 'gui', 'hack', 'skills'];
+  
+  const getSuggestion = () => {
+    if (!input) return '';
+    const match = commandsList.find(
+      (cmd) => cmd.startsWith(input.toLowerCase()) && cmd !== input.toLowerCase()
+    );
+    return match ? match.slice(input.length) : '';
+  };
+  
+  const suggestion = getSuggestion();
+
   // Focus terminal input automatically on mount
   useEffect(() => {
     focusInput();
@@ -317,6 +329,14 @@ export const Terminal: React.FC<TerminalProps> = ({ onClose, onNavigate }) => {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       handleCommand(input);
+    } else if (e.key === 'Tab') {
+      e.preventDefault();
+      const match = commandsList.find(
+        (cmd) => cmd.startsWith(input.toLowerCase()) && cmd !== input.toLowerCase()
+      );
+      if (match) {
+        setInput(match);
+      }
     }
   };
 
@@ -382,16 +402,25 @@ export const Terminal: React.FC<TerminalProps> = ({ onClose, onNavigate }) => {
         {!isHacking && (
           <div className="terminal-input-row">
             <span className="prompt-symbol">λ guest@devlog:~$</span>
-            <input
-              ref={inputRef}
-              type="text"
-              className="terminal-input"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              autoFocus
-              aria-label="Terminal command input"
-            />
+            <div className="terminal-input-container" style={{ position: 'relative', display: 'inline-flex', flex: 1 }}>
+              <input
+                ref={inputRef}
+                type="text"
+                className="terminal-input"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                autoFocus
+                aria-label="Terminal command input"
+                style={{ caretColor: 'transparent', width: '100%', background: 'transparent', border: 'none', outline: 'none' }}
+              />
+              {suggestion && (
+                <div className="terminal-ghost-text" style={{ pointerEvents: 'none', opacity: 0.35, fontFamily: 'var(--font-mono)', fontSize: '0.9rem', position: 'absolute', left: '0', top: '0', zIndex: 1, padding: '0', display: 'flex', whiteSpace: 'pre', lineHeight: '1.5' }}>
+                  <span style={{ color: 'transparent' }}>{input}</span>
+                  <span style={{ color: 'var(--color-text-main)' }}>{suggestion}</span>
+                </div>
+              )}
+            </div>
             <span className="cursor">_</span>
           </div>
         )}

@@ -27,6 +27,32 @@ export const UnifiedReader: React.FC<UnifiedReaderProps> = ({ item, onBack }) =>
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    const preBlocks = document.querySelectorAll('.article-reader-body pre');
+    preBlocks.forEach((pre: any) => {
+      if (pre.querySelector('.copy-code-btn')) return;
+      
+      const btn = document.createElement('button');
+      btn.className = 'copy-code-btn';
+      btn.textContent = 'Copy';
+      
+      btn.addEventListener('click', () => {
+        const codeText = pre.querySelector('code')?.textContent || '';
+        navigator.clipboard.writeText(codeText).then(() => {
+          btn.textContent = 'Copied!';
+          btn.style.color = 'var(--color-primary)';
+          setTimeout(() => {
+            btn.textContent = 'Copy';
+            btn.style.color = '';
+          }, 2000);
+        });
+      });
+      
+      pre.style.position = 'relative';
+      pre.appendChild(btn);
+    });
+  }, [item]);
+
   const { type, data } = item;
 
   return (
