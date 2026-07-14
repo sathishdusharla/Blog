@@ -399,7 +399,11 @@ function App() {
           <div className="brand-logo-container">
             <div className="brand-logo-top-line">SD</div>
             <div className="brand-logo-bottom-line">
-              DEV<span className="sparkle-o">O<span className="sparkle-star">✦</span></span>G
+              DEV<span className="sparkle-o">O
+                <svg className="sparkle-svg-star" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 0L14.6 9.4L24 12L14.6 14.6L12 24L9.4 14.6L0 12L9.4 9.4L12 0Z" />
+                </svg>
+              </span>G
             </div>
           </div>
           
