@@ -383,7 +383,7 @@ function App() {
         {/* Top Brand Header (Big title header) */}
         <header className="home-brand-block flex-center">
           <h1 className="home-title-logo">SD DEVLOG</h1>
-          <p className="home-slogan-text">Thoughts that trigger builds, builds that teach lessons.</p>
+          <p className="home-slogan-text">Compiling low-level logic, rendering high-fidelity designs.</p>
         </header>
 
         {/* Options Navigation Buttons */}
