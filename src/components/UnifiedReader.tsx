@@ -162,14 +162,19 @@ export const UnifiedReader: React.FC<UnifiedReaderProps> = ({ item, onBack }) =>
             <h3>Technical Architecture & Design Decisions</h3>
             <p>{data.longDescription}</p>
 
-            {data.stats.fps && (
+            {data.stats.accuracy && (
               <div style={{ marginTop: '20px', padding: '16px', background: 'rgba(230, 0, 0, 0.04)', border: '1px dashed var(--color-primary)', borderRadius: '8px' }}>
-                <strong style={{ color: 'var(--color-primary)' }}>Performance Metric:</strong> Real-time compilation and canvas rendering stable at <strong>{data.stats.fps} FPS</strong>.
+                <strong style={{ color: 'var(--color-primary)' }}>Performance Metric:</strong> Custom deep learning model achieves <strong>{data.stats.accuracy} validation accuracy</strong>.
               </div>
             )}
-            {data.stats.lines && (
+            {data.stats.cost && (
               <div style={{ marginTop: '20px', padding: '16px', background: 'rgba(230, 0, 0, 0.04)', border: '1px dashed var(--color-primary)', borderRadius: '8px' }}>
-                <strong style={{ color: 'var(--color-primary)' }}>Scale Metric:</strong> Optimized lightweight system codebase containing <strong>{data.stats.lines.toLocaleString()} lines</strong> of memory-safe code.
+                <strong style={{ color: 'var(--color-primary)' }}>Scale Metric:</strong> Highly portable and cost-effective prototype engineered at <strong>{data.stats.cost}</strong>.
+              </div>
+            )}
+            {data.stats.achievement && (
+              <div style={{ marginTop: '20px', padding: '16px', background: 'rgba(230, 0, 0, 0.04)', border: '1px dashed var(--color-primary)', borderRadius: '8px' }}>
+                <strong style={{ color: 'var(--color-primary)' }}>Event Recognition:</strong> Recognized as a <strong>{data.stats.achievement}</strong>.
               </div>
             )}
 
