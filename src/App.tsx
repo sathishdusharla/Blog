@@ -2,9 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { ArrowRight, Mail, Search } from 'lucide-react';
 import { Github, Linkedin } from './components/BrandIcons';
 import Terminal from './components/Terminal';
-import ProjectModal from './components/ProjectModal';
 import TerminalContact from './components/TerminalContact';
-import ArticleReader from './components/ArticleReader';
+import UnifiedReader from './components/UnifiedReader';
 import { projects } from './data/projects';
 import type { Project } from './data/projects';
 import { articles } from './data/articles';
@@ -14,9 +13,8 @@ import './App.css';
 
 function App() {
   const [activeTab, setActiveTab] = useState<'all' | 'articles' | 'projects' | 'milestones' | 'contact'>('all');
-  const [readingArticle, setReadingArticle] = useState<Article | null>(null);
+  const [activeDetail, setActiveDetail] = useState<{ type: 'article' | 'project' | 'achievement'; data: any } | null>(null);
   const [isTerminalOpen, setIsTerminalOpen] = useState(false);
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   
   const [homeSearchQuery, setHomeSearchQuery] = useState('');
   const [homeSelectedTopic, setHomeSelectedTopic] = useState('All');
@@ -151,22 +149,22 @@ function App() {
   const handleTerminalNavigate = (target: string) => {
     if (target === 'projects') {
       setActiveTab('projects');
-      setReadingArticle(null);
+      setActiveDetail(null);
     } else if (target === 'milestones') {
       setActiveTab('milestones');
-      setReadingArticle(null);
+      setActiveDetail(null);
     } else if (target === 'contact') {
       setActiveTab('contact');
-      setReadingArticle(null);
+      setActiveDetail(null);
     } else if (target === 'articles' || target === 'posts') {
       setActiveTab('articles');
-      setReadingArticle(null);
+      setActiveDetail(null);
     } else if (target.startsWith('article-')) {
       const artId = target.replace('article-', '');
       const article = articles.find((a) => a.id === artId);
       if (article) {
         setActiveTab('articles');
-        setReadingArticle(article);
+        setActiveDetail({ type: 'article', data: article });
       }
     }
   };
@@ -187,11 +185,11 @@ function App() {
   };
 
   const renderContent = () => {
-    if (readingArticle) {
+    if (activeDetail) {
       return (
-        <ArticleReader 
-          article={readingArticle} 
-          onBack={() => setReadingArticle(null)} 
+        <UnifiedReader 
+          item={activeDetail} 
+          onBack={() => setActiveDetail(null)} 
         />
       );
     }
@@ -203,7 +201,7 @@ function App() {
         <article
           key={`art-${art.id}`}
           className="featured-post-card glass-card"
-          onClick={() => setReadingArticle(art)}
+          onClick={() => setActiveDetail({ type: 'article', data: art })}
         >
           <div className="card-top-badges">
             <span className="post-card-category badge-research">Research</span>
@@ -236,7 +234,7 @@ function App() {
         <article
           key={`proj-${proj.id}`}
           className="featured-post-card glass-card"
-          onClick={() => setSelectedProject(proj)}
+          onClick={() => setActiveDetail({ type: 'project', data: proj })}
         >
           <div className="card-top-badges">
             <span className="post-card-category badge-project">Project</span>
@@ -269,6 +267,7 @@ function App() {
         <article
           key={`ach-${ach.id}`}
           className="featured-post-card glass-card"
+          onClick={() => setActiveDetail({ type: 'achievement', data: ach })}
         >
           <div className="card-top-badges">
             <span className="post-card-category badge-achievement">Achievement</span>
@@ -370,7 +369,7 @@ function App() {
     }
   };
 
-  const showFilterBlock = !readingArticle && activeTab !== 'contact';
+  const showFilterBlock = !activeDetail && activeTab !== 'contact';
 
   return (
     <div className="app-container">
@@ -390,32 +389,32 @@ function App() {
         {/* Options Navigation Buttons */}
         <div className="home-options-bar flex-center">
           <button 
-            onClick={() => { setActiveTab('all'); setReadingArticle(null); }} 
-            className={`home-option-btn ${activeTab === 'all' && !readingArticle ? 'active' : ''}`}
+            onClick={() => { setActiveTab('all'); setActiveDetail(null); }} 
+            className={`home-option-btn ${activeTab === 'all' && !activeDetail ? 'active' : ''}`}
           >
             All
           </button>
           <button 
-            onClick={() => { setActiveTab('articles'); setReadingArticle(null); }} 
-            className={`home-option-btn ${activeTab === 'articles' && !readingArticle ? 'active' : ''}`}
+            onClick={() => { setActiveTab('articles'); setActiveDetail(null); }} 
+            className={`home-option-btn ${activeTab === 'articles' && !activeDetail ? 'active' : ''}`}
           >
             Research
           </button>
           <button 
-            onClick={() => { setActiveTab('projects'); setReadingArticle(null); }} 
-            className={`home-option-btn ${activeTab === 'projects' && !readingArticle ? 'active' : ''}`}
+            onClick={() => { setActiveTab('projects'); setActiveDetail(null); }} 
+            className={`home-option-btn ${activeTab === 'projects' && !activeDetail ? 'active' : ''}`}
           >
             Projects
           </button>
           <button 
-            onClick={() => { setActiveTab('milestones'); setReadingArticle(null); }} 
-            className={`home-option-btn ${activeTab === 'milestones' && !readingArticle ? 'active' : ''}`}
+            onClick={() => { setActiveTab('milestones'); setActiveDetail(null); }} 
+            className={`home-option-btn ${activeTab === 'milestones' && !activeDetail ? 'active' : ''}`}
           >
             Achievements
           </button>
           <button 
-            onClick={() => { setActiveTab('contact'); setReadingArticle(null); }} 
-            className={`home-option-btn ${activeTab === 'contact' && !readingArticle ? 'active' : ''}`}
+            onClick={() => { setActiveTab('contact'); setActiveDetail(null); }} 
+            className={`home-option-btn ${activeTab === 'contact' && !activeDetail ? 'active' : ''}`}
           >
             Contact
           </button>
@@ -480,13 +479,6 @@ function App() {
           </div>
         </div>
       )}
-
-      {/* Project details dialog */}
-      <ProjectModal
-        project={selectedProject}
-        isOpen={selectedProject !== null}
-        onClose={() => setSelectedProject(null)}
-      />
 
       {/* Global simple footer */}
       <footer className="global-site-footer">
