@@ -1,8 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { ArrowRight, ArrowLeft, Mail, Search } from 'lucide-react';
 import { Github, Linkedin } from './components/BrandIcons';
-import Terminal from './components/Terminal';
-import TerminalContact from './components/TerminalContact';
 import UnifiedReader from './components/UnifiedReader';
 import { projects } from './data/projects';
 import type { Project } from './data/projects';
@@ -12,9 +10,8 @@ import { achievements } from './data/achievements';
 import './App.css';
 
 function App() {
-  const [activeTab, setActiveTab] = useState<'all' | 'articles' | 'projects' | 'milestones' | 'contact'>('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'articles' | 'projects' | 'milestones'>('all');
   const [activeDetail, setActiveDetail] = useState<{ type: 'article' | 'project' | 'achievement'; data: any } | null>(null);
-  const [isTerminalOpen, setIsTerminalOpen] = useState(false);
   
   const [homeSearchQuery, setHomeSearchQuery] = useState('');
   const [homeSelectedTopic, setHomeSelectedTopic] = useState('All');
@@ -151,29 +148,7 @@ function App() {
     return matchesTopic && matchesSearch;
   });
 
-  // Handle navigations from Terminal console commands
-  const handleTerminalNavigate = (target: string) => {
-    if (target === 'projects') {
-      setActiveTab('projects');
-      setActiveDetail(null);
-    } else if (target === 'milestones') {
-      setActiveTab('milestones');
-      setActiveDetail(null);
-    } else if (target === 'contact') {
-      setActiveTab('contact');
-      setActiveDetail(null);
-    } else if (target === 'articles' || target === 'posts') {
-      setActiveTab('articles');
-      setActiveDetail(null);
-    } else if (target.startsWith('article-')) {
-      const artId = target.replace('article-', '');
-      const article = articles.find((a) => a.id === artId);
-      if (article) {
-        setActiveTab('articles');
-        setActiveDetail({ type: 'article', data: article });
-      }
-    }
-  };
+
 
   const handleCardMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const card = e.currentTarget;
@@ -390,15 +365,12 @@ function App() {
           </div>
         );
 
-      case 'contact':
-        return <div className="animate-fade-in"><TerminalContact /></div>;
-
       default:
         return <div>Section not found.</div>;
     }
   };
 
-  const showFilterBlock = !activeDetail && activeTab !== 'contact';
+  const showFilterBlock = !activeDetail;
 
   return (
     <div className="app-container">
@@ -452,18 +424,6 @@ function App() {
             >
               Achievements
             </button>
-            <button 
-              onClick={() => { setActiveTab('contact'); setActiveDetail(null); }} 
-              className={`home-option-btn ${activeTab === 'contact' && !activeDetail ? 'active' : ''}`}
-            >
-              Contact
-            </button>
-            <button 
-              onClick={() => setIsTerminalOpen(true)} 
-              className="home-option-btn console-btn-opt"
-            >
-              Developer Console (CLI)
-            </button>
           </div>
         )}
 
@@ -509,17 +469,7 @@ function App() {
         </div>
       </main>
 
-      {/* Retro/Neon Terminal overlay console */}
-      {isTerminalOpen && (
-        <div className="terminal-overlay" onClick={() => setIsTerminalOpen(false)}>
-          <div className="terminal-modal-wrap" onClick={(e) => e.stopPropagation()}>
-            <Terminal 
-              onClose={() => setIsTerminalOpen(false)} 
-              onNavigate={handleTerminalNavigate}
-            />
-          </div>
-        </div>
-      )}
+
 
       {/* Global simple footer */}
       <footer className="global-site-footer">
