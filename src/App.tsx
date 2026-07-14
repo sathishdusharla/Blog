@@ -397,10 +397,10 @@ function App() {
           </button>
           
           <div className="brand-logo-container">
-            <span className="brand-sd-stacked">SD</span>
-            <span className="brand-devlog-text">
+            <div className="brand-logo-top-line">SD</div>
+            <div className="brand-logo-bottom-line">
               DEV<span className="sparkle-o">O<span className="sparkle-star">✦</span></span>G
-            </span>
+            </div>
           </div>
           
           <p className="home-slogan-text">Compiling low-level logic, rendering high-fidelity designs.</p>
