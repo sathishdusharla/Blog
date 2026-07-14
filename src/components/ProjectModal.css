@@ -1,0 +1,291 @@
+@layer components {
+  .project-modal {
+    outline: none;
+  }
+
+  .modal-content-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    position: relative;
+  }
+
+  .modal-close-btn {
+    position: absolute;
+    top: -12px;
+    right: -12px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-bg-input);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    transition: all var(--transition-fast);
+  }
+
+  .modal-close-btn:hover {
+    color: var(--color-text-heading);
+    background: rgba(255, 255, 255, 0.08);
+    transform: rotate(90deg);
+  }
+
+  .modal-header {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 16px;
+  }
+
+  .modal-badge {
+    align-self: flex-start;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 2px 10px;
+    border-radius: 4px;
+    border: 1px solid var(--color-border);
+  }
+
+  .modal-title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--color-text-heading);
+  }
+
+  .modal-stats-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    align-items: center;
+  }
+
+  .modal-stat-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .modal-stat-item strong {
+    color: var(--color-text-heading);
+  }
+
+  .modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    text-align: left;
+  }
+
+  .modal-main-desc h3, .modal-tech-section h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--color-text-heading);
+  }
+
+  .modal-main-desc p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--color-text-main);
+  }
+
+  .modal-tech-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .modal-tech-card {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    background: var(--color-bg-input);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+  }
+
+  .tech-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+
+  .tech-name {
+    font-size: 0.85rem;
+    font-family: var(--font-mono);
+    color: var(--color-text-main);
+  }
+
+  /* Architectural Blueprint Visualizer */
+  .modal-blueprint-graphic {
+    background: rgba(8, 9, 15, 0.95);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .blueprint-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.02);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .blueprint-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .blueprint-dot.red { background: #eb5757; }
+  .blueprint-dot.yellow { background: #f2c94c; }
+  .blueprint-dot.green { background: #27ae60; }
+
+  .blueprint-title {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    margin-left: 8px;
+  }
+
+  .blueprint-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    gap: 15px;
+    background-image: 
+      linear-gradient(rgba(0, 242, 254, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 242, 254, 0.03) 1px, transparent 1px);
+    background-size: 15px 15px;
+  }
+
+  .diagram-node {
+    padding: 10px 18px;
+    border-radius: 8px;
+    background: rgba(18, 20, 32, 0.9);
+    border: 1px solid var(--color-border);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  }
+
+  .diagram-vector {
+    flex: 1;
+    max-width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--color-border), var(--blueprint-accent, var(--color-secondary)));
+    position: relative;
+  }
+
+  .diagram-vector::after {
+    content: '>';
+    position: absolute;
+    right: -4px;
+    top: -9px;
+    font-family: var(--font-mono);
+    color: var(--blueprint-accent, var(--color-secondary));
+    font-size: 0.7rem;
+    font-weight: 700;
+  }
+
+  .node-wasm {
+    border: 1px solid var(--blueprint-accent, var(--color-secondary));
+    box-shadow: 0 0 15px rgba(0, 242, 254, 0.15);
+  }
+
+  .sub-tag {
+    font-size: 0.65rem;
+    color: var(--color-text-muted);
+    margin-top: 2px;
+  }
+
+  .modal-footer {
+    display: flex;
+    gap: 16px;
+    justify-content: flex-end;
+    border-top: 1px solid var(--color-border);
+    padding-top: 20px;
+    flex-wrap: wrap;
+  }
+
+  .modal-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: all var(--transition-fast);
+    cursor: pointer;
+  }
+
+  .github-btn {
+    background: var(--color-bg-input);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-heading);
+  }
+
+  .github-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--color-border-hover);
+    transform: translateY(-2px);
+  }
+
+  .demo-btn {
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(0, 242, 254, 0.15);
+  }
+
+  .demo-btn:hover {
+    filter: brightness(1.1);
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 600px) {
+    .modal-stats-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .modal-close-btn {
+      top: 10px;
+      right: 10px;
+    }
+    .blueprint-diagram {
+      flex-direction: column;
+      gap: 20px;
+    }
+    .diagram-vector {
+      width: 2px;
+      height: 30px;
+      max-width: none;
+    }
+    .diagram-vector::after {
+      display: none;
+    }
+    .modal-footer {
+      flex-direction: column;
+    }
+    .modal-action-btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+}

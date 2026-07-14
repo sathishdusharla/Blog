@@ -1,0 +1,214 @@
+@layer components {
+  .timeline-section {
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+    padding: 60px 20px;
+    align-items: center;
+    width: 100%;
+  }
+
+  /* Stats grid */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 24px;
+    width: 100%;
+    max-width: 900px;
+  }
+
+  .stat-card {
+    text-align: center;
+    padding: 30px 20px;
+  }
+
+  .stat-value {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 8px;
+    font-family: var(--font-mono);
+  }
+
+  .stat-label {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Timeline line track */
+  .timeline-container {
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+    margin-top: 20px;
+  }
+
+  .timeline-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    background: linear-gradient(180deg, var(--color-secondary), var(--color-primary), transparent);
+    z-index: 1;
+  }
+
+  .timeline-list {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    width: 100%;
+  }
+
+  .timeline-item {
+    display: flex;
+    position: relative;
+    width: 100%;
+    z-index: 2;
+  }
+
+  /* Left/Right layouts */
+  .timeline-item.left {
+    justify-content: flex-start;
+  }
+
+  .timeline-item.right {
+    justify-content: flex-end;
+  }
+
+  .timeline-item.left .timeline-card {
+    margin-right: 50px;
+    text-align: right;
+  }
+
+  .timeline-item.right .timeline-card {
+    margin-left: 50px;
+    text-align: left;
+  }
+
+  .timeline-card {
+    width: calc(50% - 50px);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 24px;
+    position: relative;
+  }
+
+  /* Mark circles */
+  .timeline-marker {
+    position: absolute;
+    left: 50%;
+    top: 24px;
+    transform: translateX(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--color-bg-surface-opaque);
+    border: 2px solid var(--color-primary);
+    color: var(--color-secondary);
+    box-shadow: 0 0 10px rgba(0, 242, 254, 0.2);
+    z-index: 5;
+    transition: all var(--transition-fast);
+  }
+
+  .timeline-item:hover .timeline-marker {
+    color: #ffffff;
+    background: var(--color-primary);
+    box-shadow: var(--glow-purple);
+    transform: translateX(-50%) scale(1.1);
+  }
+
+  .timeline-year {
+    font-size: 1.1rem;
+    font-weight: 800;
+    font-family: var(--font-mono);
+    color: var(--color-secondary);
+  }
+
+  .timeline-type-badge {
+    align-self: flex-start;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 1px 8px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+  }
+
+  .timeline-item.left .timeline-type-badge {
+    align-self: flex-end;
+  }
+
+  .timeline-type-badge.milestone {
+    background: rgba(0, 242, 254, 0.05);
+    border-color: var(--color-secondary);
+    color: var(--color-secondary);
+  }
+
+  .timeline-type-badge.award {
+    background: rgba(242, 153, 74, 0.05);
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  .timeline-type-badge.certification {
+    background: rgba(155, 81, 224, 0.05);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  .timeline-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--color-text-heading);
+  }
+
+  .timeline-subtitle {
+    font-size: 0.95rem;
+    color: var(--color-text-main);
+    font-weight: 600;
+  }
+
+  .timeline-desc {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+  }
+
+  /* Responsive timeline layout */
+  @media (max-width: 768px) {
+    .timeline-line {
+      left: 20px;
+    }
+
+    .timeline-marker {
+      left: 20px;
+      transform: translateX(-50%);
+    }
+
+    .timeline-item:hover .timeline-marker {
+      transform: translateX(-50%) scale(1.1);
+    }
+
+    .timeline-item.left, .timeline-item.right {
+      justify-content: flex-end;
+    }
+
+    .timeline-card {
+      width: calc(100% - 50px);
+      margin-left: 50px !important;
+      margin-right: 0 !important;
+      text-align: left !important;
+    }
+
+    .timeline-item.left .timeline-type-badge {
+      align-self: flex-start;
+    }
+  }
+}
